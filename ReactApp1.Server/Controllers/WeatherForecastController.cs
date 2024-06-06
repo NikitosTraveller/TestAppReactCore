@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ReactApp1.Server.Models;
 using System.Security.Claims;
 using TestApp.Server.Models;
 
@@ -112,7 +113,12 @@ namespace ReactApp1.Server.Controllers
         [HttpGet("admin"), Authorize]
         public async Task<ActionResult> AdminPage()
         {
-            var result = await userManager.Users.ToListAsync();
+            var result = await userManager.Users.Select(respone => new UserListResponse(){
+                Name = respone.Name,
+                Email = respone.Email ?? string.Empty,
+                LastLoginDate = respone.LastLoginDate,
+                LoginCount = respone.LoginCount
+            }).ToListAsync();
             return Ok(new { users = result });
         }
 

@@ -2,7 +2,7 @@ import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements } 
 import ProtectedRoutes from './ProtectedRoutes';
 import './App.css';
 import Home from './components/Home';
-import Admin from './components/Admin';
+import UserList from './components/UserList';
 import Login from './components/Login';
 import Register from './components/Register';
 
@@ -11,7 +11,7 @@ const router = createBrowserRouter(
         <Route path='/'>
             <Route element={<ProtectedRoutes />}>
                 <Route path='/' element={<Home />} />
-                <Route path='/admin' element={<Admin />} />
+                <Route path='/admin' element={<UserList />} />
             </Route>
             <Route path='/login' element={<Login />} />
             <Route path='/register' element={<Register />} />
@@ -54,7 +54,7 @@ function App() {
                     isLogged ?
                         <span className='item-holder'>
                             <a href="/">Home</a>
-                            <a href="/admin">Admin</a>
+                            <a href="/admin">Users</a>
                             <span onClick={logout}>Log Out</span>
                         </span> :
                         <span className='item-holder'>

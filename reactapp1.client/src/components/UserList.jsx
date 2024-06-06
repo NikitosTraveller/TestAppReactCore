@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-function Admin() {
+function UserList() {
 
     document.title = "Users";
     const [users, setUsers] = useState([]);
@@ -56,4 +56,4 @@ function Admin() {
     );
 }
 
-export default Admin;
+export default UserList;
