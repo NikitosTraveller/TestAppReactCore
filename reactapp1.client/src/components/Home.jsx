@@ -30,14 +30,16 @@ function Home() {
                                 <tr>
                                     <th>Name</th>
                                     <th>Email</th>
-                                    <th>Created Date</th>
+                                    <th>Last Login Date</th>
+                                    <th>Login Count</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
                                     <td>{userInfo.name}</td>
                                     <td>{userInfo.email}</td>
-                                    <td>{userInfo.createdDate ? userInfo.createdDate.split("T")[0] : ""}</td>
+                                    <td>{userInfo.lastLoginDate ? userInfo.lastLoginDate.split("T")[0] : ""}</td>
+                                    <td>{userInfo.loginCount}</td>
                                 </tr>
                             </tbody>
                         </table>
