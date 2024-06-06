@@ -8,7 +8,7 @@
 
         public string Email { get; set; }
 
-        public DateTime LastLoginDate { get; set; }
+        public DateTime? LastLoginDate { get; set; }
 
         public bool IsAdmin { get; set; } = false;
     }

@@ -9,8 +9,7 @@ namespace TestApp.Server.Models
 
         public string Name { get; set; }
 
-        [Column(TypeName = "datetime")]
-        public DateTime LastLoginDate { get; set; } = DateTime.Now;
+        public Nullable<DateTime> LastLoginDate { get; set; }
 
         public bool IsAdmin { get; set; } = false;
     }
