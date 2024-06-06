@@ -1,4 +1,8 @@
 
+using Microsoft.EntityFrameworkCore;
+using TestApp.Server.Data;
+using TestApp.Server.Models;
+
 namespace ReactApp1.Server
 {
     public class Program
@@ -10,9 +14,31 @@ namespace ReactApp1.Server
             // Add services to the container.
 
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddAuthorization();
+            builder.Services.AddDbContext<AppDBContext>(options => {
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DBConnectionString"));
+            });
+
+            builder.Services.AddIdentityApiEndpoints<User>().AddEntityFrameworkStores<AppDBContext>();
+
+            builder.Services.AddIdentityCore<User>(options => {
+                options.SignIn.RequireConfirmedAccount = true;
+                options.Password.RequireDigit = true;
+                options.Password.RequireNonAlphanumeric = true;
+                options.Password.RequireUppercase = true;
+                options.Password.RequiredLength = 6;
+                options.Password.RequiredUniqueChars = 0;
+
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Lockout.AllowedForNewUsers = true;
+
+                // User settings.
+                options.User.AllowedUserNameCharacters =
+                "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+                options.User.RequireUniqueEmail = true;
+
+            }).AddEntityFrameworkStores<AppDBContext>();
 
             var app = builder.Build();
 
@@ -20,16 +46,11 @@ namespace ReactApp1.Server
             app.UseStaticFiles();
 
             // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
 
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
-
+            app.MapIdentityApi<User>();
 
             app.MapControllers();
 
