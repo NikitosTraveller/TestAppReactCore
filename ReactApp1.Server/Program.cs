@@ -22,7 +22,6 @@ namespace ReactApp1.Server
             builder.Services.AddIdentityApiEndpoints<User>().AddEntityFrameworkStores<AppDBContext>();
 
             builder.Services.AddIdentityCore<User>(options => {
-                options.SignIn.RequireConfirmedAccount = true;
                 options.Password.RequireDigit = true;
                 options.Password.RequireNonAlphanumeric = true;
                 options.Password.RequireUppercase = true;

@@ -68,13 +68,6 @@ namespace ReactApp1.Server.Controllers
                 User user_ = await userManager.FindByEmailAsync(login.Email);
                 if (user_ != null)
                 {
-                    login.Username = user_.UserName;
-
-                    if (!user_.EmailConfirmed)
-                    {
-                        user_.EmailConfirmed = true;
-                    }
-
                     var result = await signInManager.PasswordSignInAsync(user_, login.Password, login.Remember, false);
 
                     if (!result.Succeeded)

@@ -45,6 +45,7 @@ function Login() {
     );
     async function loginHandler(e) {
         e.preventDefault();
+
         const form_ = e.target, submitter = document.querySelector("input.login");
 
         const formData = new FormData(form_, submitter), dataToSend = {};
