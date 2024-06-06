@@ -1,49 +1,72 @@
-import { useEffect, useState } from 'react';
+import { Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router-dom';
+import ProtectedRoutes from './ProtectedRoutes';
 import './App.css';
+import Home from './components/Home';
+import Admin from './components/Admin';
+import Login from './components/Login';
+import Register from './components/Register';
 
+const router = createBrowserRouter(
+    createRoutesFromElements(
+        <Route path='/'>
+            <Route element={<ProtectedRoutes />}>
+                <Route path='/' element={<Home />} />
+                <Route path='/admin' element={<Admin />} />
+            </Route>
+            <Route path='/login' element={<Login />} />
+            <Route path='/register' element={<Register />} />
+            <Route path='*' element={
+                <div>
+                    <header>
+                        <h1>Not Found</h1>
+                    </header>
+                    <p>
+                        <a href="/">Back to Home</a>
+                    </p>
+                </div>
+            } />
+        </Route>
+    )
+);
 function App() {
-    const [forecasts, setForecasts] = useState();
+    const isLogged = localStorage.getItem("user");
+    const logout = async () => {
+        const response = await fetch("/weatherforecast/logout", {
+            method: "GET",
+            credentials: "include"
+        });
 
-    useEffect(() => {
-        populateWeatherData();
-    }, []);
-
-    const contents = forecasts === undefined
-        ? <p><em>Loading... Please refresh once the ASP.NET backend has started. See <a href="https://aka.ms/jspsintegrationreact">https://aka.ms/jspsintegrationreact</a> for more details.</em></p>
-        : <table className="table table-striped" aria-labelledby="tableLabel">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Temp. (C)</th>
-                    <th>Temp. (F)</th>
-                    <th>Summary</th>
-                </tr>
-            </thead>
-            <tbody>
-                {forecasts.map(forecast =>
-                    <tr key={forecast.date}>
-                        <td>{forecast.date}</td>
-                        <td>{forecast.temperatureC}</td>
-                        <td>{forecast.temperatureF}</td>
-                        <td>{forecast.summary}</td>
-                    </tr>
-                )}
-            </tbody>
-        </table>;
-
-    return (
-        <div>
-            <h1 id="tableLabel">Weather forecast</h1>
-            <p>This component demonstrates fetching data from the server.</p>
-            {contents}
-        </div>
-    );
-    
-    async function populateWeatherData() {
-        const response = await fetch('weatherforecast');
         const data = await response.json();
-        setForecasts(data);
-    }
+        if (response.ok) {
+            localStorage.removeItem("user");
+
+            alert(data.message);
+
+            document.location = "/login";
+        } else {
+            console.log("could not logout: ", response);
+        }
+    };
+    return (
+        <section>
+            <div className='top-nav'>
+                {
+                    isLogged ?
+                        <span className='item-holder'>
+                            <a href="/">Home</a>
+                            <a href="/admin">Admin</a>
+                            <span onClick={logout}>Log Out</span>
+                        </span> :
+                        <span className='item-holder'>
+                            <a href="/login">Login</a>
+                            <a href="/register">Register</a>
+                        </span>
+                }
+            </div>
+
+            <RouterProvider router={router} />
+        </section>
+    );
 }
 
 export default App;
