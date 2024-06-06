@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using TestApp.Server.Models;
 
@@ -109,12 +110,10 @@ namespace ReactApp1.Server.Controllers
         }
 
         [HttpGet("admin"), Authorize]
-        public ActionResult AdminPage()
+        public async Task<ActionResult> AdminPage()
         {
-            string[] partners = { "Raja", "Bill Gates", "Elon Musk", "Taylor Swift", "Jeff Bezoss",
-                                        "Mark Zuckerberg", "Joe Biden", "Putin"};
-
-            return Ok(new { trustedPartners = partners });
+            var result = await userManager.Users.ToListAsync();
+            return Ok(new { users = result });
         }
 
         [HttpGet("home/{email}"), Authorize]

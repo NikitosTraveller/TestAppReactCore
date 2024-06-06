@@ -17,6 +17,7 @@ function Home() {
             console.log("Error home page: ", error);
         });
     }, []);
+
     return (
         <section className='page'>
             <header>

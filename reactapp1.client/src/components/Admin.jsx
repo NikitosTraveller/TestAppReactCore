@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 
 function Admin() {
 
-    document.title = "Admin";
-    const [partners, setPartners] = useState([]);
+    document.title = "Users";
+    const [users, setUsers] = useState([]);
 
     useEffect(() => {
 
@@ -11,29 +11,44 @@ function Admin() {
             method: "GET",
             credentials: "include"
         }).then(response => response.json()).then(data => {
-            setPartners(data.trustedPartners);
-            console.log("trustedPartners: ", data.trustedPartners);
+            setUsers(data.users);
+            console.log("users: ", data.users);
         }).catch(error => {
-            console.log("Error home page: ", error);
+            console.log("Error users page: ", error);
         });
     }, []);
+
     return (
         <section className='admin-page page'>
             <header>
-                <h1>Admin page</h1>
+                <h1>Users</h1>
             </header>
             <section>
                 {
-                    partners ?
+                    users &&
                         <div>
-                            <div>Our trusted partners are:</div>
-                            <ol>
-                                {partners.map((partner, i) => <li key={i}>{partner}</li>)}
-                            </ol>
-                        </div>
-                        :
-                        <div className='waiting-page'>
-                            <div>Waiting...</div>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Last Login Date</th>
+                                        <th>Login Count</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        users.map((user) =>
+                                         <tr key={user.email}>
+                                            <td>{user.name}</td>
+                                            <td>{user.email}</td>
+                                            <td>{user.lastLoginDate ? user.lastLoginDate.split("T")[0] : ""}</td>
+                                            <td>{user.loginCount}</td>
+                                        </tr>
+                                        )
+                                    }
+                                </tbody>
+                            </table>
                         </div>
                 }
             </section>
