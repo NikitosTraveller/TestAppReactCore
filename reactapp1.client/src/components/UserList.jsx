@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import DateFormatter from '../helpers/dateHelper';
 
 function UserList() {
 
@@ -26,7 +27,6 @@ function UserList() {
             <section>
                 {
                     users &&
-                        <div>
                             <table>
                                 <thead>
                                     <tr>
@@ -42,14 +42,13 @@ function UserList() {
                                          <tr key={user.email}>
                                             <td>{user.name}</td>
                                             <td>{user.email}</td>
-                                            <td>{user.lastLoginDate ? user.lastLoginDate.split("T")[0] : ""}</td>
+                                            <td>{DateFormatter(user.lastLoginDate, "DD/MM/yyyy HH:mm:ss")}</td>
                                             <td>{user.loginCount}</td>
                                         </tr>
                                         )
                                     }
                                 </tbody>
                             </table>
-                        </div>
                 }
             </section>
         </section>

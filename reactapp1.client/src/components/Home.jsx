@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import DateFormatter from '../helpers/dateHelper';
 
 function Home() {
 
@@ -39,7 +40,7 @@ function Home() {
                                 <tr>
                                     <td>{userInfo.name}</td>
                                     <td>{userInfo.email}</td>
-                                    <td>{userInfo.lastLoginDate ? userInfo.lastLoginDate.split("T")[0] : ""}</td>
+                                    <td>{DateFormatter(userInfo.lastLoginDate, "DD/MM/yyyy HH:mm:ss")}</td>
                                     <td>{userInfo.loginCount}</td>
                                 </tr>
                             </tbody>
