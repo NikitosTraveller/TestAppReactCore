@@ -67,7 +67,7 @@ namespace ReactApp1.Server.Controllers
 
                     user_.LastLoginDate = DateTime.Now;
                     user_.LoginCount++;
-                    //user_.Role = new IdentityRole()
+
                     var updateResult = await _userManager.UpdateAsync(user_);
                 }
                 else

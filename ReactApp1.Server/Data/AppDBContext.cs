@@ -20,15 +20,7 @@ namespace TestApp.Server.Data
             var adminRole = new IdentityRole(Role.Admin.ToString());
             var regularUserRole = new IdentityRole(Role.Regular.ToString());
 
-            var superAdmin = new User()
-            {
-                UserName = SuperAdminData.UserName,
-                Email = SuperAdminData.Email,
-                PasswordHash = SuperAdminData.PasswordHash,
-            };
-
             builder.Entity<IdentityRole>().HasData(superAdminRole, adminRole, regularUserRole);
-            builder.Entity<User>().HasData(superAdmin);
 
             base.OnModelCreating(builder);
         }
