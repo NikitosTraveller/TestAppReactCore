@@ -19,7 +19,7 @@ namespace TestApp.Server.Data
             {
                 UserName = SuperAdminData.UserName,
                 Email = SuperAdminData.Email,
-                PasswordHash = SuperAdminData.Password,
+                PasswordHash = SuperAdminData.PasswordHash,
                 IsAdmin = SuperAdminData.IsAdmin,
             };
 
