@@ -38,7 +38,6 @@ function Register() {
                     </form>
                 </div>
                 <div className='my-5'>
-                    <span>Or </span>
                     <a href="/login">Login</a>
                 </div>
             </div>

@@ -12,22 +12,6 @@ namespace ReactApp1.Server.Controllers
     [Route("[controller]")]
     public class WeatherForecastController(SignInManager<User> sm, UserManager<User> um) : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
-
-        [HttpGet(Name = "GetWeatherForecast")]
-        public IEnumerable<WeatherForecast> Get()
-        {
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-            {
-                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-            })
-            .ToArray();
-        }
         private readonly SignInManager<User> signInManager = sm;
         private readonly UserManager<User> userManager = um;
 
@@ -44,8 +28,9 @@ namespace ReactApp1.Server.Controllers
                     Name = user.Name,
                     Email = user.Email,
                     UserName = user.UserName,
+                    IsAdmin = true
                 };
-
+        
                 result = await userManager.CreateAsync(user_, user.PasswordHash);
 
                 if (!result.Succeeded)
@@ -79,6 +64,7 @@ namespace ReactApp1.Server.Controllers
 
                     user_.LastLoginDate = DateTime.Now;
                     user_.LoginCount++;
+                    //user_.Role = new IdentityRole()
                     var updateResult = await userManager.UpdateAsync(user_);
                 }
                 else
@@ -113,11 +99,13 @@ namespace ReactApp1.Server.Controllers
         [HttpGet("admin"), Authorize]
         public async Task<ActionResult> AdminPage()
         {
-            var result = await userManager.Users.Select(respone => new UserListResponse(){
-                Name = respone.Name,
-                Email = respone.Email ?? string.Empty,
-                LastLoginDate = respone.LastLoginDate,
-                LoginCount = respone.LoginCount
+            var result = await userManager.Users.Select(user => new UserListResponse(){
+                Name = user.Name,
+                Email = user.Email ?? string.Empty,
+                LastLoginDate = user.LastLoginDate,
+                LoginCount = user.LoginCount,
+                IsAdmin = true,
+                Id = user.Id
             }).ToListAsync();
             return Ok(new { users = result });
         }

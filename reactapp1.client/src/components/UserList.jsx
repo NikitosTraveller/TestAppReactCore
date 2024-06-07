@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import DateFormatter from '../helpers/dateHelper';
+//import { DeleteIcon } from '@mui/icons-material';
 
 function UserList() {
 
@@ -34,16 +35,20 @@ function UserList() {
                                         <th>Email</th>
                                         <th>Last Login Date</th>
                                         <th>Login Count</th>
+                                        <th>Role Name</th>
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {
                                         users.map((user) =>
-                                         <tr key={user.email}>
+                                         <tr key={user.id}>
                                             <td>{user.name}</td>
                                             <td>{user.email}</td>
                                             <td>{DateFormatter(user.lastLoginDate, "DD/MM/yyyy HH:mm:ss")}</td>
                                             <td>{user.loginCount}</td>
+                                            <td>{user.isAdmin ? "Admin" : "Regular"}</td>
+                                            <td><button>Delete</button></td>
                                         </tr>
                                         )
                                     }

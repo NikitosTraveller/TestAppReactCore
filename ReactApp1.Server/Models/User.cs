@@ -7,10 +7,11 @@ namespace TestApp.Server.Models
     {
         public int LoginCount { get; set; } = 0;
 
+        public bool IsAdmin {  get; set; }
+
         public string Name { get; set; }
 
-        public Nullable<DateTime> LastLoginDate { get; set; }
-
-        public bool IsAdmin { get; set; } = false;
+        [Column(TypeName = "datetime")]
+        public DateTime LastLoginDate { get; set; } = DateTime.Now;
     }
 }
