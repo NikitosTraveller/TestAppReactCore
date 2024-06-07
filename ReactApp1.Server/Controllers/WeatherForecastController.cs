@@ -95,6 +95,27 @@ namespace ReactApp1.Server.Controllers
             return Ok(new { message = "You are free to go!" });
         }
 
+        [HttpDelete("delete/{id}"), Authorize]
+        public async Task<ActionResult> DeleteUser(string id)
+        {
+            try
+            {
+                User userInfo = await userManager.FindByIdAsync(id);
+
+                if (userInfo == null) {
+                    return BadRequest(new {message = "User doesn't exist!"});
+                }
+
+                var result = await userManager.DeleteAsync(userInfo);
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = "Someting went wrong, please try again. " + ex.Message });
+            }
+        }
+
         [HttpGet("admin"), Authorize]
         public async Task<ActionResult> AdminPage()
         {

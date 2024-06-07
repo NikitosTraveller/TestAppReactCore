@@ -20,12 +20,22 @@ function UserList() {
         });
     }, []);
 
+    async function handleDelete(id) {
+        let result = await fetch("weatherforecast/delete/" + id, {
+            method: "DELETE"
+        }).then(response => response.json()).then(data => {
+            const updatedList = users.filter(user => user.id !== id);
+            setUsers(updatedList);
+        }).catch(error => {
+            console.log("Error home page: ", error);
+        });
+    }
+
     return (
         <section className='admin-page page'>
             <header>
                 <h1>Users</h1>
             </header>
-            <section>
                 {
                     users &&
                             <table>
@@ -42,20 +52,21 @@ function UserList() {
                                 <tbody>
                                     {
                                         users.map((user) =>
-                                         <tr key={user.id}>
-                                            <td>{user.userName}</td>
-                                            <td>{user.email}</td>
-                                            <td>{DateFormatter(user.lastLoginDate, "DD/MM/yyyy HH:mm:ss")}</td>
-                                            <td>{user.loginCount}</td>
-                                            <td>{user.isAdmin ? "Admin" : "Regular"}</td>
-                                            <td><button>Delete</button></td>
-                                        </tr>
+                                            <tr key={user.id}>
+                                                <td>{user.userName}</td>
+                                                <td>{user.email}</td>
+                                                <td>{DateFormatter(user.lastLoginDate, "DD/MM/yyyy HH:mm:ss")}</td>
+                                                <td>{user.loginCount}</td>
+                                                <td>{user.isAdmin ? "Admin" : "Regular"}</td>
+                                                <td>
+                                                    <button onClick={handleDelete.bind(null, user.id)}>Delete</button>
+                                                </td>
+                                            </tr>
                                         )
                                     }
                                 </tbody>
                             </table>
                 }
-            </section>
         </section>
     );
 }
