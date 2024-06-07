@@ -16,8 +16,8 @@ namespace ReactApp1.Server.Controllers
     {
         private readonly IMapper _mapper = mapper;
 
-        private readonly SignInManager<User> signInManager = sm;
-        private readonly UserManager<User> userManager = um;
+        private readonly SignInManager<User> _signInManager = sm;
+        private readonly UserManager<User> _userManager = um;
 
         [HttpPost("register")]
         public async Task<ActionResult> RegisterUser(RegisterRequest registerRequest)
@@ -27,19 +27,19 @@ namespace ReactApp1.Server.Controllers
 
             try
             {
-                User user_ = new User()
+                User _user = new User()
                 {
                     Email = registerRequest.Email,
                     UserName = registerRequest.UserName,
-                    IsAdmin = false
                 };
-        
-                result = await userManager.CreateAsync(user_, registerRequest.Password);
+
+                result = await _userManager.CreateAsync(_user, registerRequest.Password);
 
                 if (!result.Succeeded)
                 {
                     return BadRequest(result);
                 }
+
             }
             catch (Exception ex)
             {
@@ -55,10 +55,10 @@ namespace ReactApp1.Server.Controllers
 
             try
             {
-                User user_ = await userManager.FindByEmailAsync(loginRequest.Email);
+                User user_ = await _userManager.FindByEmailAsync(loginRequest.Email);
                 if (user_ != null)
                 {
-                    var result = await signInManager.PasswordSignInAsync(user_, loginRequest.Password, loginRequest.RememberMe, false);
+                    var result = await _signInManager.PasswordSignInAsync(user_, loginRequest.Password, loginRequest.RememberMe, false);
 
                     if (!result.Succeeded)
                     {
@@ -68,7 +68,7 @@ namespace ReactApp1.Server.Controllers
                     user_.LastLoginDate = DateTime.Now;
                     user_.LoginCount++;
                     //user_.Role = new IdentityRole()
-                    var updateResult = await userManager.UpdateAsync(user_);
+                    var updateResult = await _userManager.UpdateAsync(user_);
                 }
                 else
                 {
@@ -89,7 +89,7 @@ namespace ReactApp1.Server.Controllers
 
             try
             {
-                await signInManager.SignOutAsync();
+                await _signInManager.SignOutAsync();
             }
             catch (Exception ex)
             {
@@ -104,13 +104,13 @@ namespace ReactApp1.Server.Controllers
         {
             try
             {
-                User userInfo = await userManager.FindByIdAsync(id);
+                User userInfo = await _userManager.FindByIdAsync(id);
 
                 if (userInfo == null) {
                     return BadRequest(new {message = "User doesn't exist!"});
                 }
 
-                var result = await userManager.DeleteAsync(userInfo);
+                var result = await _userManager.DeleteAsync(userInfo);
 
                 return Ok(result);
             }
@@ -123,14 +123,14 @@ namespace ReactApp1.Server.Controllers
         [HttpGet("admin"), Authorize]
         public async Task<ActionResult> AdminPage()
         {
-            var result = await userManager.Users.Select(user => _mapper.Map<UserResponse>(user)).ToListAsync();
+            var result = await _userManager.Users.Select(user => _mapper.Map<UserResponse>(user)).ToListAsync();
             return Ok(new { users = result });
         }
 
         [HttpGet("home/{email}"), Authorize]
         public async Task<ActionResult> HomePage(string email)
         {
-            User userInfo = await userManager.FindByEmailAsync(email);
+            User userInfo = await _userManager.FindByEmailAsync(email);
             if (userInfo == null)
             {
                 return BadRequest(new { message = "Something went wrong, please try again." });
@@ -148,10 +148,10 @@ namespace ReactApp1.Server.Controllers
             {
                 var user_ = HttpContext.User;
                 var principals = new ClaimsPrincipal(user_);
-                var result = signInManager.IsSignedIn(principals);
+                var result = _signInManager.IsSignedIn(principals);
                 if (result)
                 {
-                    currentuser = await signInManager.UserManager.GetUserAsync(principals);
+                    currentuser = await _signInManager.UserManager.GetUserAsync(principals);
                 }
                 else
                 {
