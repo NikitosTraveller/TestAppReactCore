@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 function Login() {
 
@@ -40,7 +40,6 @@ function Login() {
     async function loginHandler(e) {
         e.preventDefault();
 
-        console.log("login data before send: ", dataToSend);
         const response = await fetch("weatherforecast/login", {
             method: "POST",
             credentials: "include",
@@ -58,18 +57,14 @@ function Login() {
         const data = await response.json();
 
         if (response.ok) {
-            localStorage.setItem("user", dataToSend.Email);
+            localStorage.setItem("user", email);
             document.location = "/";
         }
-
-        const messageEl = document.querySelector(".message");
-        if (data.message) {
-            messageEl.innerHTML = data.message;
-        } else {
-            messageEl.innerHTML = "Something went wrong, please try again";
+        else {
+            setError(data.message ?? "Something went wrong, please try again");
+            console.log("login error: ", data);
         }
 
-        console.log("login error: ", data);
     }
 
     return (

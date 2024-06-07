@@ -72,7 +72,7 @@ function Register() {
 
         const messageEl = document.querySelector(".message");
         if (data.message) {
-            messageEl.innerHTML = data.message;
+            setError(data.message);
         } else {
             let errorMessages = "<div>Attention please:</div><div class='normal'>";
             data.errors.forEach(error => {
