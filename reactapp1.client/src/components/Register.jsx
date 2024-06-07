@@ -69,21 +69,9 @@ function Register() {
         if (response.ok) {
             document.location = "/login";
         }
-
-        const messageEl = document.querySelector(".message");
-        if (data.message) {
-            setError(data.message);
-        } else {
-            let errorMessages = "<div>Attention please:</div><div class='normal'>";
-            data.errors.forEach(error => {
-                errorMessages += error.description + " ";
-            });
-
-            errorMessages += "</div>";
-            messageEl.innerHTML = errorMessages;
+        else {
+            setError(data.message ?? "Something went wrong, please try again")
         }
-
-        console.log("login error: ", data);
     }
 
     return (
