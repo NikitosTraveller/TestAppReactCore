@@ -4,6 +4,31 @@ function Login() {
 
     document.title = "Login";
 
+    const [error, setError] = useState("");
+
+    const [email, setEmail] = useState("");
+    const [rememberMe, setRememberMe] = useState(false);
+    const [password, setPassword] = useState("");
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+
+        switch (name) {
+            case "password": {
+                setPassword(value);
+                break;
+            }
+            case "email": {
+                setEmail(value);
+                break;
+            }
+            case "rememberMe": {
+                setRememberMe(e.target.checked);
+                break;
+            }
+        }
+    };
+
     // dont ask an already logged in user to login over and over again
     useEffect(() => {
         const user = localStorage.getItem("user");
@@ -15,23 +40,15 @@ function Login() {
     async function loginHandler(e) {
         e.preventDefault();
 
-        const form_ = e.target, submitter = document.querySelector("input.login");
-
-        const formData = new FormData(form_, submitter), dataToSend = {};
-
-        for (const [key, value] of formData) {
-            dataToSend[key] = value;
-        }
-
-        if (dataToSend.Remember === "on") {
-            dataToSend.Remember = true;
-        }
-
         console.log("login data before send: ", dataToSend);
         const response = await fetch("weatherforecast/login", {
             method: "POST",
             credentials: "include",
-            body: JSON.stringify(dataToSend),
+            body: JSON.stringify({
+                email: email,
+                password: password,
+                rememberMe: rememberMe
+            }),
             headers: {
                 "content-type": "Application/json",
                 "Accept": "application/json"
@@ -61,22 +78,46 @@ function Login() {
                 <header>
                     <h1>Login Page</h1>
                 </header>
-                <p className='message'></p>
+                {error && <p className="message">{error}</p>}
                 <div className='form-holder'>
                     <form action="#" className='login' onSubmit={loginHandler}>
                         <label htmlFor="email">Email</label>
                         <br />
-                        <input type="email" name='Email' id='email' required />
+                        <input
+                            type="email"
+                            name='email'
+                            id='email'
+                            value={email}
+                            onChange={handleChange}
+                            required
+                        />
                         <br />
                         <label htmlFor="password">Password</label>
                         <br />
-                        <input type="password" name='Password' id='password' required />
+                        <input
+                            type="password"
+                            name='password'
+                            id='password'
+                            value={password}
+                            onChange={handleChange}
+                            required
+                        />
                         <br />
-                        <input type="checkbox" name='Remember' id='remember' />
-                        <label htmlFor="remember">Remember Password?</label>
+                        <input
+                            type="checkbox"
+                            name='rememberMe'
+                            checked={rememberMe}
+                            onChange={handleChange}
+                            id='rememberMe'
+                        />
+                        <label htmlFor="remember">Remember Me?</label>
                         <br />
                         <br />
-                        <input type="submit" value="Login" className='login btn' />
+                        <input
+                            type="submit"
+                            value="Login"
+                            className='login btn'
+                        />
                     </form>
                 </div>
                 <div className='my-5'>

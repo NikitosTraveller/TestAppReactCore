@@ -139,7 +139,11 @@ function Register() {
                             required
                         />
                         <br />
-                        <input type="submit" value="Register" className='register btn' />
+                        <input
+                            type="submit"
+                            value="Register"
+                            className='register btn'
+                        />
                     </form>
                 </div>
                 <div className='my-5'>
