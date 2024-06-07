@@ -1,5 +1,6 @@
 
 using Microsoft.EntityFrameworkCore;
+using ReactApp1.Server.Models;
 using TestApp.Server.Data;
 using TestApp.Server.Models;
 
@@ -18,6 +19,8 @@ namespace ReactApp1.Server
             builder.Services.AddDbContext<AppDBContext>(options => {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DBConnectionString"));
             });
+
+            builder.Services.AddAutoMapper(typeof(MappingProfile));
 
             builder.Services.AddIdentityApiEndpoints<User>().AddEntityFrameworkStores<AppDBContext>();
 

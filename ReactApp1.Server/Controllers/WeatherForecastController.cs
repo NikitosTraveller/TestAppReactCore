@@ -1,8 +1,10 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ReactApp1.Server.Models;
+using System;
 using System.Security.Claims;
 using TestApp.Server.Models;
 
@@ -10,8 +12,10 @@ namespace ReactApp1.Server.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class WeatherForecastController(SignInManager<User> sm, UserManager<User> um) : ControllerBase
+    public class WeatherForecastController(SignInManager<User> sm, UserManager<User> um, IMapper mapper) : ControllerBase
     {
+        private readonly IMapper _mapper = mapper;
+
         private readonly SignInManager<User> signInManager = sm;
         private readonly UserManager<User> userManager = um;
 
@@ -119,14 +123,7 @@ namespace ReactApp1.Server.Controllers
         [HttpGet("admin"), Authorize]
         public async Task<ActionResult> AdminPage()
         {
-            var result = await userManager.Users.Select(user => new UserResponse(){
-                UserName = user.UserName ?? string.Empty,
-                Email = user.Email ?? string.Empty,
-                LastLoginDate = user.LastLoginDate,
-                LoginCount = user.LoginCount,
-                IsAdmin = true,
-                Id = user.Id
-            }).ToListAsync();
+            var result = await userManager.Users.Select(user => _mapper.Map<UserResponse>(user)).ToListAsync();
             return Ok(new { users = result });
         }
 
@@ -139,7 +136,7 @@ namespace ReactApp1.Server.Controllers
                 return BadRequest(new { message = "Something went wrong, please try again." });
             }
 
-            return Ok(new { userInfo = userInfo });
+            return Ok(new { userInfo = _mapper.Map<UserResponse>(userInfo) });
         }
 
         [HttpGet("xhtlekd")]

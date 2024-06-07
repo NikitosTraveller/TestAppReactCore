@@ -46,7 +46,7 @@ function UserList() {
                                         <th>Last Login Date</th>
                                         <th>Login Count</th>
                                         <th>Role Name</th>
-                                        <th></th>
+                                        <th>Delete</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -59,7 +59,7 @@ function UserList() {
                                                 <td>{user.loginCount}</td>
                                                 <td>{user.isAdmin ? "Admin" : "Regular"}</td>
                                                 <td>
-                                                    <button onClick={handleDelete.bind(null, user.id)}>Delete</button>
+                                                    <button hidden={!user.isAdmin} onClick={handleDelete.bind(null, user.id)}>Delete</button>
                                                 </td>
                                             </tr>
                                         )
