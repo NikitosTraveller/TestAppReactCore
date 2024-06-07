@@ -1,8 +1,38 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 function Register() {
 
     document.title = "Register";
+
+    const [error, setError] = useState("");
+
+    const [userName, setUserName] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+
+        switch (name) {
+            case "userName": {
+                setUserName(value);
+                break;
+            }
+            case "email": {
+                setEmail(value);
+                break;
+            }
+            case "password": {
+                setPassword(value);
+                break;
+            }
+            case "confirmPassword": {
+                setConfirmPassword(value);
+                break;
+            }
+        }
+    };
 
     // dont ask an already registered user to register over and over again
     useEffect(() => {
@@ -12,55 +42,22 @@ function Register() {
         }
     }, []);
 
-    return (
-        <section className='register-page-wrapper page'>
-            <div className='register-page'>
-                <header>
-                    <h1>Register Page</h1>
-                </header>
-                <p className='message'></p>
-                <div className='form-holder'>
-                    <form action="#" className='register' onSubmit={registerHandler}>
-                        <label htmlFor="name">Name</label>
-                        <br />
-                        <input type="text" name='Name' id='name' required />
-                        <br />
-                        <label htmlFor="email">Email</label>
-                        <br />
-                        <input type="email" name='Email' id='email' required />
-                        <br />
-                        <label htmlFor="password">Password</label>
-                        <br />
-                        <input type="password" name='PasswordHash' id='password' required />
-
-                        <br />
-                        <input type="submit" value="Register" className='register btn' />
-                    </form>
-                </div>
-                <div className='my-5'>
-                    <a href="/login">Login</a>
-                </div>
-            </div>
-        </section>
-    );
     async function registerHandler(e) {
         e.preventDefault();
-        const form_ = e.target, submitter = document.querySelector("input.login");
 
-        const formData = new FormData(form_, submitter), dataToSend = {};
-
-        for (const [key, value] of formData) {
-            dataToSend[key] = value;
+        if (password !== confirmPassword) {
+            setError("Passwords do not match.");
+            return;
         }
-
-        // create username
-        const newUserName = dataToSend.Name.trim().split(" ");
-        dataToSend.UserName = newUserName.join("");
 
         const response = await fetch("weatherforecast/register", {
             method: "POST",
             credentials: "include",
-            body: JSON.stringify(dataToSend),
+            body: JSON.stringify({
+                email: email,
+                userName: userName,
+                password: password
+            }),
             headers: {
                 "content-type": "Application/json",
                 "Accept": "application/json"
@@ -88,6 +85,69 @@ function Register() {
 
         console.log("login error: ", data);
     }
+
+    return (
+        <section className='register-page-wrapper page'>
+            <div className='register-page'>
+                <header>
+                    <h1>Register Page</h1>
+                </header>
+                {error && <p className="message">{error}</p>}
+                <div className='form-holder'>
+                    <form action="#" className='register' onSubmit={registerHandler}>
+                        <label htmlFor="userName">Username</label>
+                        <br />
+                        <input
+                            type="text"
+                            name='userName'
+                            id='userName'
+                            value={userName}
+                            onChange={handleChange}
+                            required
+                        />
+                        <br />
+                        <label htmlFor="email">Email</label>
+                        <br />
+                        <input
+                            type="email"
+                            name='email'
+                            id='email'
+                            value={email}
+                            onChange={handleChange}
+                            required
+                        />
+                        <br />
+                        <label htmlFor="password">Password</label>
+                        <br />
+                        <input
+                            type="password"
+                            name='password'
+                            id='password'
+                            value={password}
+                            onChange={handleChange}
+                            required
+                        />
+                        <br />
+                        <label htmlFor="confirmPassword">Confirm Password</label>
+                        <br />
+                        <input
+                            type="password"
+                            name='confirmPassword'
+                            id='confirmPassword'
+                            value={confirmPassword}
+                            onChange={handleChange}
+                            required
+                        />
+                        <br />
+                        <input type="submit" value="Register" className='register btn' />
+                    </form>
+                </div>
+                <div className='my-5'>
+                    <a href="/login">Login</a>
+                </div>
+            </div>
+        </section>
+    );
 }
 
 export default Register;

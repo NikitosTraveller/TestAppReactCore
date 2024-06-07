@@ -30,7 +30,7 @@ function Home() {
                         <table>
                             <thead>
                                 <tr>
-                                    <th>Name</th>
+                                    <th>UserName</th>
                                     <th>Email</th>
                                     <th>Last Login Date</th>
                                     <th>Login Count</th>
@@ -38,7 +38,7 @@ function Home() {
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>{userInfo.name}</td>
+                                    <td>{userInfo.userName}</td>
                                     <td>{userInfo.email}</td>
                                     <td>{DateFormatter(userInfo.lastLoginDate, "DD/MM/yyyy HH:mm:ss")}</td>
                                     <td>{userInfo.loginCount}</td>

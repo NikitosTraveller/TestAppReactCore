@@ -1,12 +1,12 @@
 ﻿namespace ReactApp1.Server.Models
 {
-    public class UserListResponse
+    public class UserResponse
     {
         public string Id { get; set; }
 
         public int LoginCount { get; set; }
 
-        public string Name { get; set; }
+        public string UserName { get; set; }
 
         public string Email { get; set; }
 

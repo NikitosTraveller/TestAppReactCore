@@ -31,7 +31,7 @@ function UserList() {
                             <table>
                                 <thead>
                                     <tr>
-                                        <th>Name</th>
+                                        <th>UserName</th>
                                         <th>Email</th>
                                         <th>Last Login Date</th>
                                         <th>Login Count</th>
@@ -43,7 +43,7 @@ function UserList() {
                                     {
                                         users.map((user) =>
                                          <tr key={user.id}>
-                                            <td>{user.name}</td>
+                                            <td>{user.userName}</td>
                                             <td>{user.email}</td>
                                             <td>{DateFormatter(user.lastLoginDate, "DD/MM/yyyy HH:mm:ss")}</td>
                                             <td>{user.loginCount}</td>

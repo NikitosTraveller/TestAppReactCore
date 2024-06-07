@@ -1,6 +1,6 @@
 ﻿namespace TestApp.Server.Models
 {
-    public class Login
+    public class LoginRequest
     {
         public string Email { get; set; }
 

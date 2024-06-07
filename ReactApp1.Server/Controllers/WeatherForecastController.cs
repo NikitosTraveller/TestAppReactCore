@@ -16,7 +16,7 @@ namespace ReactApp1.Server.Controllers
         private readonly UserManager<User> userManager = um;
 
         [HttpPost("register")]
-        public async Task<ActionResult> RegisterUser(User user)
+        public async Task<ActionResult> RegisterUser(RegisterRequest registerRequest)
         {
 
             IdentityResult result = new();
@@ -25,13 +25,12 @@ namespace ReactApp1.Server.Controllers
             {
                 User user_ = new User()
                 {
-                    Name = user.Name,
-                    Email = user.Email,
-                    UserName = user.UserName,
-                    IsAdmin = true
+                    Email = registerRequest.Email,
+                    UserName = registerRequest.UserName,
+                    IsAdmin = false
                 };
         
-                result = await userManager.CreateAsync(user_, user.PasswordHash);
+                result = await userManager.CreateAsync(user_, registerRequest.Password);
 
                 if (!result.Succeeded)
                 {
@@ -47,15 +46,15 @@ namespace ReactApp1.Server.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult> LoginUser(Login login)
+        public async Task<ActionResult> LoginUser(LoginRequest loginRequest)
         {
 
             try
             {
-                User user_ = await userManager.FindByEmailAsync(login.Email);
+                User user_ = await userManager.FindByEmailAsync(loginRequest.Email);
                 if (user_ != null)
                 {
-                    var result = await signInManager.PasswordSignInAsync(user_, login.Password, login.Remember, false);
+                    var result = await signInManager.PasswordSignInAsync(user_, loginRequest.Password, loginRequest.Remember, false);
 
                     if (!result.Succeeded)
                     {
@@ -99,8 +98,8 @@ namespace ReactApp1.Server.Controllers
         [HttpGet("admin"), Authorize]
         public async Task<ActionResult> AdminPage()
         {
-            var result = await userManager.Users.Select(user => new UserListResponse(){
-                Name = user.Name,
+            var result = await userManager.Users.Select(user => new UserResponse(){
+                UserName = user.UserName ?? string.Empty,
                 Email = user.Email ?? string.Empty,
                 LastLoginDate = user.LastLoginDate,
                 LoginCount = user.LoginCount,
