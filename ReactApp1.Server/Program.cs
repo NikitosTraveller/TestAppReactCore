@@ -25,9 +25,7 @@ namespace ReactApp1.Server
 
             builder.Services.AddAutoMapper(typeof(MappingProfile));
 
-            //builder.Services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<AppDBContext>();
-            builder.Services.AddIdentityApiEndpoints<User>().AddEntityFrameworkStores<AppDBContext>();
-            //builder.Services.AddIdentityApiEndpoints<IdentityRole>().AddEntityFrameworkStores<AppDBContext>();
+            builder.Services.AddIdentityApiEndpoints<User>().AddRoles<IdentityRole>().AddEntityFrameworkStores<AppDBContext>();
 
             builder.Services.AddIdentityCore<User>(options => {
                 options.Password.RequireDigit = true;
@@ -40,7 +38,6 @@ namespace ReactApp1.Server
                 options.Lockout.MaxFailedAccessAttempts = 5;
                 options.Lockout.AllowedForNewUsers = true;
 
-                // User settings.
                 options.User.AllowedUserNameCharacters =
                 "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
                 options.User.RequireUniqueEmail = true;
@@ -58,7 +55,6 @@ namespace ReactApp1.Server
 
             app.UseAuthorization();
             app.MapIdentityApi<User>();
-            //app.MapIdentityApi<IdentityRole>();
 
             app.MapControllers();
 

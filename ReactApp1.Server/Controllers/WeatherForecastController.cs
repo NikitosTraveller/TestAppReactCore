@@ -40,6 +40,9 @@ namespace ReactApp1.Server.Controllers
                     return BadRequest(result);
                 }
 
+                var addedUser = await _userManager.FindByEmailAsync(registerRequest.Email);
+                await _userManager.AddToRoleAsync(addedUser, Role.Regular.ToString());
+
             }
             catch (Exception ex)
             {

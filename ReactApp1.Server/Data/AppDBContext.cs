@@ -16,12 +16,6 @@ namespace TestApp.Server.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            var superAdminRole = new IdentityRole(Role.SuperAdmin.ToString());
-            var adminRole = new IdentityRole(Role.Admin.ToString());
-            var regularUserRole = new IdentityRole(Role.Regular.ToString());
-
-            builder.Entity<IdentityRole>().HasData(superAdminRole, adminRole, regularUserRole);
-
             base.OnModelCreating(builder);
         }
     }
