@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import DateFormatter from '../helpers/dateHelper';
+import formatDate from '../helpers/dateHelper';
 import { isAdmin, isRegular, isSuperAdmin } from '../helpers/userHelper';
 import Avatar from 'react-avatar';
 import axios from 'axios';
@@ -81,7 +81,7 @@ function UserList() {
                                                 <td><Avatar googleId="118096717852922241760" size="50" round={true} /></td>
                                                 <td>{user.userName}</td>
                                                 <td>{user.email}</td>
-                                                <td>{DateFormatter(user.lastLoginDate, "DD/MM/yyyy HH:mm:ss")}</td>
+                                                <td>{formatDate(user.lastLoginDate, "DD/MM/yyyy HH:mm:ss")}</td>
                                                 <td>{user.loginCount}</td>
                                                 <td>{user.roleName}</td>
                                                 <td>

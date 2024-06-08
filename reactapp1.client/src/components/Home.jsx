@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import DateFormatter from '../helpers/dateHelper';
+import formatDate from '../helpers/dateHelper';
 import Avatar from 'react-avatar';
 import axios from 'axios';
 
@@ -74,7 +74,7 @@ function Home() {
                             <tbody>
                                 <tr>
                                     <td>{userInfo.email}</td>
-                                    <td>{DateFormatter(userInfo.lastLoginDate, "DD/MM/yyyy HH:mm:ss")}</td>
+                                    <td>{formatDate(userInfo.lastLoginDate, "DD/MM/yyyy HH:mm:ss")}</td>
                                     <td>{userInfo.loginCount}</td>
                                     <td>{userInfo.roleName}</td>
                                 </tr>
