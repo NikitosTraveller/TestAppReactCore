@@ -50,16 +50,19 @@ namespace TestApp.Server.Data
             var superAdminRole = new Role()
             {
                 Name = AppUserRole.SuperAdmin.ToString(),
+                NormalizedName = AppUserRole.SuperAdmin.ToString().ToUpper()
             };
 
             var adminRole = new Role()
             {
                 Name = AppUserRole.Admin.ToString(),
+                NormalizedName = AppUserRole.Admin.ToString().ToUpper()
             };
 
             var regularUserRole = new Role()
             {
                 Name = AppUserRole.Regular.ToString(),
+                NormalizedName = AppUserRole.Regular.ToString().ToUpper()
             };
 
             builder.Entity<Role>().HasData(superAdminRole, adminRole, regularUserRole);

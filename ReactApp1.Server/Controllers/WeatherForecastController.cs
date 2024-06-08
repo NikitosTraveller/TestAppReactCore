@@ -36,12 +36,6 @@ namespace ReactApp1.Server.Controllers
                 };
 
                 result = await _userManager.CreateAsync(_user, registerRequest.Password);
-
-                if (!result.Succeeded)
-                {
-                    return BadRequest(result);
-                }
-
                 var addedUser = await _userManager.FindByEmailAsync(registerRequest.Email);
                 await _userManager.AddToRoleAsync(addedUser, AppUserRole.Regular.ToString());
 
@@ -126,6 +120,26 @@ namespace ReactApp1.Server.Controllers
             {
                 return BadRequest(new { message = "Someting went wrong, please try again. " + ex.Message });
             }
+        }
+
+        [HttpPut("changerole"), Authorize]
+        public async Task<ActionResult> ChangeUserRole(string id, string role)
+        {
+            var data = await _appDBContext.Users
+                .Where(u => u.Id == id)
+                .Include(x => x.UserRoles)
+                .ThenInclude(r => r.Role)
+                .FirstOrDefaultAsync();
+
+            if (data == null) {
+                return BadRequest();
+            }
+
+            await _userManager.AddToRoleAsync(data, role);
+
+            var result = _mapper.Map<UserResponse>(data);
+
+            return Ok(new { users = result });
         }
 
         [HttpGet("users"), Authorize]

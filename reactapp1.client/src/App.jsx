@@ -11,7 +11,7 @@ const router = createBrowserRouter(
         <Route path='/'>
             <Route element={<ProtectedRoutes />}>
                 <Route path='/' element={<Home />} />
-                <Route path='/admin' element={<UserList />} />
+                <Route path='/users' element={<UserList />} />
             </Route>
             <Route path='/login' element={<Login />} />
             <Route path='/register' element={<Register />} />
@@ -54,7 +54,7 @@ function App() {
                     isLogged ?
                         <span className='item-holder'>
                             <a href="/">Home</a>
-                            <a href="/admin">Users</a>
+                            <a href="/users">Users</a>
                             <span onClick={logout}>Log Out</span>
                         </span> :
                         <span className='item-holder'>

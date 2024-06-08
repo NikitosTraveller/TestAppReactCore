@@ -32,6 +32,26 @@ function UserList() {
         });
     }
 
+    async function handleRoleChange(user) {
+        debugger;
+        let result = await fetch("weatherforecast/changerole", {
+            method: "PUT",
+            body: JSON.stringify({
+                role: isAdmin(user) ? 'Regular' : 'Admin',
+                id: user.id,
+            }),
+            headers: {
+                "content-type": "Application/json",
+                "Accept": "application/json"
+            }
+        }).then(response => response.json()).then(data => {
+            const updatedList = users.filter(user => user.id !== id);
+            setUsers(updatedList);
+        }).catch(error => {
+            console.log("Error home page: ", error);
+        });
+    }
+
     return (
         <section className='admin-page page'>
             <header>
@@ -47,6 +67,7 @@ function UserList() {
                                         <th>Last Login Date</th>
                                         <th>Login Count</th>
                                         <th>Role Name</th>
+                                        <th>Action</th>
                                         <th>Delete</th>
                                     </tr>
                                 </thead>
@@ -60,7 +81,16 @@ function UserList() {
                                                 <td>{user.loginCount}</td>
                                                 <td>{user.roleName}</td>
                                                 <td>
-                                                    <button hidden={!isAdmin(user) && !isSuperAdmin(user)} onClick={handleDelete.bind(null, user.id)}>Delete</button>
+                                                    {
+                                                        !isSuperAdmin(user) &&
+                                                        <button onClick={handleRoleChange.bind(null, user)}>Make {isRegular(user) ? 'Admin' : 'Regular'}</button>
+                                                    }      
+                                                </td>
+                                                <td>
+                                                    {
+                                                        !isSuperAdmin(user) &&
+                                                        <button onClick={handleDelete.bind(null, user.id)}>Delete</button>
+                                                    }
                                                 </td>
                                             </tr>
                                         )
