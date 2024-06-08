@@ -13,13 +13,15 @@ namespace ReactApp1.Server.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class WeatherForecastController(SignInManager<User> sm, UserManager<User> um, AppDBContext context, IMapper mapper) : ControllerBase
+    public class WeatherForecastController(SignInManager<User> sm, UserManager<User> um, 
+        AppDBContext context, IWebHostEnvironment webHostEnvironment, IMapper mapper) : ControllerBase
     {
         private readonly IMapper _mapper = mapper;
 
         private readonly SignInManager<User> _signInManager = sm;
         private readonly UserManager<User> _userManager = um;
         private readonly AppDBContext _appDBContext = context;
+        private readonly IWebHostEnvironment _hostEnvironment = webHostEnvironment;
 
         [HttpPost("register")]
         public async Task<ActionResult> RegisterUser(RegisterRequest registerRequest)
@@ -125,11 +127,7 @@ namespace ReactApp1.Server.Controllers
         [HttpPut("changerole"), Authorize]
         public async Task<ActionResult> ChangeUserRole(ChangeRoleRequest changeRoleRequest)
         {
-            var data = await _appDBContext.Users
-                .Where(u => u.Id == changeRoleRequest.Id)
-                .Include(x => x.UserRoles)
-                .ThenInclude(r => r.Role)
-                .FirstOrDefaultAsync();
+            var data = await _userManager.FindByIdAsync(changeRoleRequest.Id);
 
             if (data == null) {
                 return BadRequest();
@@ -170,6 +168,8 @@ namespace ReactApp1.Server.Controllers
             else
             {
                 var resultUser = _mapper.Map<UserResponse>(userInfo);
+                var u = String.Format("{0}://{1}{2}/Avatars/{3}", Request.Scheme, Request.Host, Request.PathBase, "89d01b6b-d2ee-4ef0-9cb9-a3fcb903a7c7_CV_img.jpg");
+                resultUser.Avatar = u; // Path.Combine(_hostEnvironment.ContentRootPath, "Avatars", "89d01b6b-d2ee-4ef0-9cb9-a3fcb903a7c7_CV_img.jpg"); ;
                 return Ok(new { userInfo = resultUser });
             }
         }

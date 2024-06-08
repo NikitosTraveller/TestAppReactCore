@@ -12,6 +12,8 @@
 
         public string RoleName { get; set; }
 
+        public string Avatar { get; set; }
+
         public DateTime? LastLoginDate { get; set; }
     }
 }

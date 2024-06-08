@@ -1,6 +1,7 @@
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using ReactApp1.Server.Models;
 using TestApp.Server.Data;
 using TestApp.Server.Models;
@@ -44,8 +45,11 @@ namespace ReactApp1.Server
 
             var app = builder.Build();
 
-            app.UseDefaultFiles();
-            app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(builder.Environment.ContentRootPath, "Avatars")),
+                RequestPath = "/Avatars"
+            });
 
             // Configure the HTTP request pipeline.
 

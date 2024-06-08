@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import DateFormatter from '../helpers/dateHelper';
 import Avatar from 'react-avatar';
 import axios from 'axios';
+
 function Home() {
 
     document.title = "Welcome";
@@ -57,7 +58,7 @@ function Home() {
                     <div>
                         <br />
                         <header>
-                            <Avatar onClick={selectFileHandler} googleId="118096717852922241760" size="100" round={true} />
+                            <img onClick={selectFileHandler} alt="text" src={userInfo.avatar} />
                             <span>Welcome to your page, {userInfo.userName} !</span>
                         </header>
                         <br/>

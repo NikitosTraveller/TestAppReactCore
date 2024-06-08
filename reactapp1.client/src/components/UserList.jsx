@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import DateFormatter from '../helpers/dateHelper';
 import { isAdmin, isRegular, isSuperAdmin } from '../helpers/userHelper';
 import Avatar from 'react-avatar';
+import axios from 'axios';
 
 function UserList() {
 
@@ -22,25 +23,20 @@ function UserList() {
     }, []);
 
     async function handleDelete(id) {
-        let result = await fetch("weatherforecast/delete/" + id, {
-            method: "DELETE"
-        }).then(response => response.json()).then(data => {
-            const updatedList = users.filter(user => user.id !== id);
-            setUsers(updatedList);
+        let result = await axios.delete("weatherforecast/delete/" + id)
+            .then(response => response.json()).then(data =>
+            {
+                const updatedList = users.filter(user => user.id !== id);
+                setUsers(updatedList);
         }).catch(error => {
             console.log("Error home page: ", error);
         });
     }
 
     async function handleRoleChange(user) {
-        debugger;
-        let result = await fetch("weatherforecast/changerole", {
-            method: "PUT",
-            credentials: "include",
-            body: JSON.stringify({
-                role: isAdmin(user) ? 'Regular' : 'Admin',
-                id: user.id,
-            })
+        let result = await axios.put("weatherforecast/changerole", {
+            role: isAdmin(user) ? 'Regular' : 'Admin',
+            id: user.id,
         }).then(response => response.json()).then(data => {
             const updatedList = users.filter(user => user.id !== id);
             setUsers(updatedList);
