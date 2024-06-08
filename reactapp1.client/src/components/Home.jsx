@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import DateFormatter from '../helpers/dateHelper';
-
+import Avatar from 'react-avatar';
 function Home() {
 
     document.title = "Welcome";
@@ -24,9 +24,12 @@ function Home() {
             {
                 userInfo ?
                     <div>
+                        <br />
                         <header>
-                            <h1>Welcome to your page, {userInfo.userName} !</h1>
+                            <Avatar googleId="118096717852922241760" size="100" round={true} />
+                            <span>Welcome to your page, {userInfo.userName} !</span>
                         </header>
+                        <br/>
                         <table>
                             <thead>
                                 <tr>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import DateFormatter from '../helpers/dateHelper';
 import { isAdmin, isRegular, isSuperAdmin } from '../helpers/userHelper';
-//import { DeleteIcon } from '@mui/icons-material';
+import Avatar from 'react-avatar';
 
 function UserList() {
 
@@ -36,14 +36,11 @@ function UserList() {
         debugger;
         let result = await fetch("weatherforecast/changerole", {
             method: "PUT",
+            credentials: "include",
             body: JSON.stringify({
                 role: isAdmin(user) ? 'Regular' : 'Admin',
                 id: user.id,
-            }),
-            headers: {
-                "content-type": "Application/json",
-                "Accept": "application/json"
-            }
+            })
         }).then(response => response.json()).then(data => {
             const updatedList = users.filter(user => user.id !== id);
             setUsers(updatedList);
@@ -62,6 +59,7 @@ function UserList() {
                             <table>
                                 <thead>
                                     <tr>
+                                        <th></th>
                                         <th>UserName</th>
                                         <th>Email</th>
                                         <th>Last Login Date</th>
@@ -75,6 +73,7 @@ function UserList() {
                                     {
                                         users.map((user) =>
                                             <tr key={user.id}>
+                                                <td><Avatar googleId="118096717852922241760" size="50" round={true} /></td>
                                                 <td>{user.userName}</td>
                                                 <td>{user.email}</td>
                                                 <td>{DateFormatter(user.lastLoginDate, "DD/MM/yyyy HH:mm:ss")}</td>
