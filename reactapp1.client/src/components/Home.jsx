@@ -21,27 +21,27 @@ function Home() {
 
     return (
         <section className='page'>
-            <header>
-                <h1>Welcome to your page</h1>
-            </header>
             {
                 userInfo ?
                     <div>
+                        <header>
+                            <h1>Welcome to your page, {userInfo.userName} !</h1>
+                        </header>
                         <table>
                             <thead>
                                 <tr>
-                                    <th>UserName</th>
                                     <th>Email</th>
                                     <th>Last Login Date</th>
                                     <th>Login Count</th>
+                                    <th>Role Name</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>{userInfo.userName}</td>
                                     <td>{userInfo.email}</td>
                                     <td>{DateFormatter(userInfo.lastLoginDate, "DD/MM/yyyy HH:mm:ss")}</td>
                                     <td>{userInfo.loginCount}</td>
+                                    <td>{userInfo.roleName}</td>
                                 </tr>
                             </tbody>
                         </table>

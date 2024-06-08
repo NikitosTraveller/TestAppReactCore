@@ -138,8 +138,14 @@ namespace ReactApp1.Server.Controllers
             {
                 return BadRequest(new { message = "Something went wrong, please try again." });
             }
-
-            return Ok(new { userInfo = _mapper.Map<UserResponse>(userInfo) });
+            else
+            {
+                var roles = await _userManager.GetRolesAsync(userInfo);
+                string role = roles.FirstOrDefault();
+                var resultUser = _mapper.Map<UserResponse>(userInfo);
+                resultUser.RoleName = role;
+                return Ok(new { userInfo = resultUser });
+            }
         }
 
         [HttpGet("xhtlekd")]

@@ -26,11 +26,11 @@ namespace ReactApp1.Server.Data
                 PasswordHash = SuperAdminData.PasswordHash,
             };
 
+            var result = await userManager.CreateAsync(superAdmin, SuperAdminData.Password);
             var userInDb = await userManager.FindByEmailAsync(superAdmin.Email);
-            if (userInDb == null)
+            if (userInDb != null)
             {
-                await userManager.CreateAsync(superAdmin, SuperAdminData.Password);
-                await userManager.AddToRoleAsync(superAdmin, Role.SuperAdmin.ToString());
+                await userManager.AddToRoleAsync(userInDb, Role.SuperAdmin.ToString());
             }
         }
     }
