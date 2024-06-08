@@ -9,7 +9,7 @@ function UserList() {
 
     useEffect(() => {
 
-        fetch("weatherforecast/admin", {
+        fetch("weatherforecast/users", {
             method: "GET",
             credentials: "include"
         }).then(response => response.json()).then(data => {
@@ -57,7 +57,7 @@ function UserList() {
                                                 <td>{user.email}</td>
                                                 <td>{DateFormatter(user.lastLoginDate, "DD/MM/yyyy HH:mm:ss")}</td>
                                                 <td>{user.loginCount}</td>
-                                                <td>{user.isAdmin ? "Admin" : "Regular"}</td>
+                                                <td>{user.roleName}</td>
                                                 <td>
                                                     <button hidden={!user.isAdmin} onClick={handleDelete.bind(null, user.id)}>Delete</button>
                                                 </td>

@@ -123,8 +123,8 @@ namespace ReactApp1.Server.Controllers
             }
         }
 
-        [HttpGet("admin"), Authorize]
-        public async Task<ActionResult> AdminPage()
+        [HttpGet("users"), Authorize]
+        public async Task<ActionResult> GetAllUsers()
         {
             var result = await _userManager.Users.Select(user => _mapper.Map<UserResponse>(user)).ToListAsync();
             return Ok(new { users = result });
