@@ -9,7 +9,7 @@ namespace TestApp.Server.Models
 
         public DateTime? LastLoginDate { get; set; }
 
-        public string? Avatar {  get; set; }
+        //public string? Avatar {  get; set; }
 
         public virtual ICollection<UserRole> UserRoles { get; set; }
     }

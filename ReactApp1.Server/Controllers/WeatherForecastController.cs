@@ -137,11 +137,13 @@ namespace ReactApp1.Server.Controllers
                 return BadRequest();
             }
 
+            await _userManager.RemoveFromRolesAsync(data, [AppUserRole.Admin.ToString(), AppUserRole.Regular.ToString()]);
             await _userManager.AddToRoleAsync(data, changeRoleRequest.Role);
 
             var result = _mapper.Map<UserResponse>(data);
+            result.RoleName = changeRoleRequest.Role;
 
-            return Ok(new { users = result });
+            return Ok(new { updatedUser = result });
         }
 
         [HttpGet("users"), Authorize]

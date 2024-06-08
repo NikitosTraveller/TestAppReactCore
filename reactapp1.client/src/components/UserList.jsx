@@ -37,9 +37,18 @@ function UserList() {
         let result = await axios.put("weatherforecast/changerole", {
             role: isAdmin(user) ? 'Regular' : 'Admin',
             id: user.id,
-        }).then(response => response.json()).then(data => {
-            const updatedList = users.filter(user => user.id !== id);
-            setUsers(updatedList);
+        }).then(function (response) {
+            const _updatedUser = response.data.updatedUser;
+
+            const currentUserIndex = users.findIndex((u) => u.email === _updatedUser.email);
+            const updatedUser = { ...users[currentUserIndex], roleName: _updatedUser.roleName };
+
+            const newList = [
+                ...users.slice(0, currentUserIndex),
+                updatedUser,
+                ...users.slice(currentUserIndex + 1)
+            ];
+            setUsers(newList);;
         }).catch(error => {
             console.log("Error home page: ", error);
         });
