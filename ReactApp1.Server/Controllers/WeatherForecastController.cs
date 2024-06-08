@@ -123,10 +123,10 @@ namespace ReactApp1.Server.Controllers
         }
 
         [HttpPut("changerole"), Authorize]
-        public async Task<ActionResult> ChangeUserRole(string id, string role)
+        public async Task<ActionResult> ChangeUserRole(ChangeRoleRequest changeRoleRequest)
         {
             var data = await _appDBContext.Users
-                .Where(u => u.Id == id)
+                .Where(u => u.Id == changeRoleRequest.Id)
                 .Include(x => x.UserRoles)
                 .ThenInclude(r => r.Role)
                 .FirstOrDefaultAsync();
@@ -135,7 +135,7 @@ namespace ReactApp1.Server.Controllers
                 return BadRequest();
             }
 
-            await _userManager.AddToRoleAsync(data, role);
+            await _userManager.AddToRoleAsync(data, changeRoleRequest.Role);
 
             var result = _mapper.Map<UserResponse>(data);
 
@@ -181,8 +181,8 @@ namespace ReactApp1.Server.Controllers
 
             try
             {
-                var user_ = HttpContext.User;
-                var principals = new ClaimsPrincipal(user_);
+                var _user = HttpContext.User;
+                var principals = new ClaimsPrincipal(_user);
                 var result = _signInManager.IsSignedIn(principals);
                 if (result)
                 {
@@ -199,6 +199,31 @@ namespace ReactApp1.Server.Controllers
             }
 
             return Ok(new { message = "Logged in", user = currentuser });
+        }
+
+        [HttpPost("avatar")]
+        public async Task<IActionResult> UploadAvatar([FromForm] UploadFileRequest uploadFileRequest)
+        {
+            if (uploadFileRequest.FormFile == null || uploadFileRequest.FormFile.Length == 0)
+                return BadRequest("No file uploaded.");
+
+            var uploadsFolder = Path.Combine("wwwroot", "Avatars");
+            if (!Directory.Exists(uploadsFolder))
+            {
+                Directory.CreateDirectory(uploadsFolder);
+            }
+
+            var uniqueFileName = uploadFileRequest.UserId + "_" + uploadFileRequest.FileName;
+            var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                await uploadFileRequest.FormFile.CopyToAsync(fileStream);
+            }
+
+            var avatarUrl = Url.Content($"~/Avatars/{uniqueFileName}");
+
+            return Ok(new { avatarUrl });
         }
     }
 }
