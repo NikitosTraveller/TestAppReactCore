@@ -60,20 +60,23 @@ namespace ReactApp1.Server.Controllers
 
             try
             {
-                User user_ = _appDBContext.Users.Where(u => u.Email == loginRequest.Email).FirstOrDefault(); 
-                if (user_ != null)
+                User? _user = _appDBContext.Users
+                    .Where(u => u.Email == loginRequest.Email)
+                    .FirstOrDefault(); 
+
+                if (_user != null)
                 {
-                    var result = await _signInManager.PasswordSignInAsync(user_, loginRequest.Password, loginRequest.RememberMe, false);
+                    var result = await _signInManager.PasswordSignInAsync(_user, loginRequest.Password, loginRequest.RememberMe, false);
 
                     if (!result.Succeeded)
                     {
                         return Unauthorized(new { message = "Check your login credentials and try again" });
                     }
 
-                    user_.LastLoginDate = DateTime.Now;
-                    user_.LoginCount++;
+                    _user.LastLoginDate = DateTime.Now;
+                    _user.LoginCount++;
 
-                    var updateResult = await _userManager.UpdateAsync(user_);
+                    var updateResult = await _userManager.UpdateAsync(_user);
                 }
                 else
                 {
@@ -128,17 +131,24 @@ namespace ReactApp1.Server.Controllers
         [HttpGet("users"), Authorize]
         public async Task<ActionResult> GetAllUsers()
         {
-            var result = await _appDBContext.Users
+            var data = await _appDBContext.Users
                 .Include(x => x.UserRoles)
                 .ThenInclude(r => r.Role)
                 .ToListAsync();
-            return Ok(new { users = result });
+            var result = data.Select(u => _mapper.Map<UserResponse>(u)).ToList();
+
+            return Ok(new { users =  result});
         }
 
         [HttpGet("home/{email}"), Authorize]
-        public async Task<ActionResult> HomePage(string email)
+        public async Task<ActionResult> GetCurrentUser(string email)
         {
-            User userInfo = _appDBContext.Users.Where(u => u.Email == email).Include(u => u.UserRoles).ThenInclude(r => r.Role).FirstOrDefault();
+            User? userInfo = await _appDBContext.Users
+                .Where(u => u.Email == email)
+                .Include(u => u.UserRoles)
+                .ThenInclude(r => r.Role)
+                .FirstOrDefaultAsync();
+
             if (userInfo == null)
             {
                 return BadRequest(new { message = "Something went wrong, please try again." });

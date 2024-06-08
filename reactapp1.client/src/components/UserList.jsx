@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import DateFormatter from '../helpers/dateHelper';
+import { isAdmin, isRegular, isSuperAdmin } from '../helpers/userHelper';
 //import { DeleteIcon } from '@mui/icons-material';
 
 function UserList() {
@@ -59,7 +60,7 @@ function UserList() {
                                                 <td>{user.loginCount}</td>
                                                 <td>{user.roleName}</td>
                                                 <td>
-                                                    <button hidden={!user.isAdmin} onClick={handleDelete.bind(null, user.id)}>Delete</button>
+                                                    <button hidden={!isAdmin(user) && !isSuperAdmin(user)} onClick={handleDelete.bind(null, user.id)}>Delete</button>
                                                 </td>
                                             </tr>
                                         )
