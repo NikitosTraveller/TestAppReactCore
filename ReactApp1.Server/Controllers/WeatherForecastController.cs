@@ -127,7 +127,11 @@ namespace ReactApp1.Server.Controllers
         [HttpPut("changerole"), Authorize]
         public async Task<ActionResult> ChangeUserRole(ChangeRoleRequest changeRoleRequest)
         {
-            var data = await _userManager.FindByIdAsync(changeRoleRequest.Id);
+            var data = await _appDBContext.Users
+                .Where(u => u.Id == changeRoleRequest.Id)
+                .Include(x => x.UserRoles)
+                .ThenInclude(r => r.Role)
+                .FirstOrDefaultAsync();
 
             if (data == null) {
                 return BadRequest();
