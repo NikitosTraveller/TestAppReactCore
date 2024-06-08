@@ -6,18 +6,20 @@ using Microsoft.EntityFrameworkCore;
 using ReactApp1.Server.Models;
 using System;
 using System.Security.Claims;
+using TestApp.Server.Data;
 using TestApp.Server.Models;
 
 namespace ReactApp1.Server.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class WeatherForecastController(SignInManager<User> sm, UserManager<User> um, IMapper mapper) : ControllerBase
+    public class WeatherForecastController(SignInManager<User> sm, UserManager<User> um, AppDBContext context, IMapper mapper) : ControllerBase
     {
         private readonly IMapper _mapper = mapper;
 
         private readonly SignInManager<User> _signInManager = sm;
         private readonly UserManager<User> _userManager = um;
+        private readonly AppDBContext _appDBContext = context;
 
         [HttpPost("register")]
         public async Task<ActionResult> RegisterUser(RegisterRequest registerRequest)
@@ -41,7 +43,7 @@ namespace ReactApp1.Server.Controllers
                 }
 
                 var addedUser = await _userManager.FindByEmailAsync(registerRequest.Email);
-                await _userManager.AddToRoleAsync(addedUser, Role.Regular.ToString());
+                await _userManager.AddToRoleAsync(addedUser, AppUserRole.Regular.ToString());
 
             }
             catch (Exception ex)
@@ -58,7 +60,7 @@ namespace ReactApp1.Server.Controllers
 
             try
             {
-                User user_ = await _userManager.FindByEmailAsync(loginRequest.Email);
+                User user_ = _appDBContext.Users.Where(u => u.Email == loginRequest.Email).FirstOrDefault(); 
                 if (user_ != null)
                 {
                     var result = await _signInManager.PasswordSignInAsync(user_, loginRequest.Password, loginRequest.RememberMe, false);
@@ -126,24 +128,24 @@ namespace ReactApp1.Server.Controllers
         [HttpGet("users"), Authorize]
         public async Task<ActionResult> GetAllUsers()
         {
-            var result = await _userManager.Users.Select(user => _mapper.Map<UserResponse>(user)).ToListAsync();
+            var result = await _appDBContext.Users
+                .Include(x => x.UserRoles)
+                .ThenInclude(r => r.Role)
+                .ToListAsync();
             return Ok(new { users = result });
         }
 
         [HttpGet("home/{email}"), Authorize]
         public async Task<ActionResult> HomePage(string email)
         {
-            User userInfo = await _userManager.FindByEmailAsync(email);
+            User userInfo = _appDBContext.Users.Where(u => u.Email == email).Include(u => u.UserRoles).ThenInclude(r => r.Role).FirstOrDefault();
             if (userInfo == null)
             {
                 return BadRequest(new { message = "Something went wrong, please try again." });
             }
             else
             {
-                var roles = await _userManager.GetRolesAsync(userInfo);
-                string role = roles.FirstOrDefault();
                 var resultUser = _mapper.Map<UserResponse>(userInfo);
-                resultUser.RoleName = role;
                 return Ok(new { userInfo = resultUser });
             }
         }

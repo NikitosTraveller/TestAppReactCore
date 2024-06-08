@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using System.ComponentModel.DataAnnotations.Schema;
+using ReactApp1.Server.Models;
 
 namespace TestApp.Server.Models
 {
@@ -8,5 +8,7 @@ namespace TestApp.Server.Models
         public int LoginCount { get; set; } = 0;
 
         public DateTime? LastLoginDate { get; set; }
+
+        public virtual ICollection<UserRole> UserRoles { get; set; }
     }
 }

@@ -1,8 +1,6 @@
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using ReactApp1.Server.Data;
 using ReactApp1.Server.Models;
 using TestApp.Server.Data;
 using TestApp.Server.Models;
@@ -25,7 +23,7 @@ namespace ReactApp1.Server
 
             builder.Services.AddAutoMapper(typeof(MappingProfile));
 
-            builder.Services.AddIdentityApiEndpoints<User>().AddRoles<IdentityRole>().AddEntityFrameworkStores<AppDBContext>();
+            builder.Services.AddIdentityApiEndpoints<User>().AddRoles<Role>().AddEntityFrameworkStores<AppDBContext>();
 
             builder.Services.AddIdentityCore<User>(options => {
                 options.Password.RequireDigit = true;
@@ -59,11 +57,6 @@ namespace ReactApp1.Server
             app.MapControllers();
 
             app.MapFallbackToFile("/index.html");
-
-            using (var scope = app.Services.CreateScope())
-            {
-                await DbSeeder.SeedDatabase(scope.ServiceProvider);
-            }
 
             app.Run();
         }

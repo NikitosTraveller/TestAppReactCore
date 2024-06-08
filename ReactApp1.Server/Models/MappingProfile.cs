@@ -8,7 +8,8 @@ namespace ReactApp1.Server.Models
     {
         public MappingProfile()
         {
-            CreateMap<User, UserResponse>();
+            CreateMap<User, UserResponse>()
+                .ForMember(dest => dest.RoleName, opt => opt.MapFrom(src => src.UserRoles.First().Role.Name)); ;
         }
     }
 }
