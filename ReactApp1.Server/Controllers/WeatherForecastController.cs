@@ -180,7 +180,7 @@ namespace ReactApp1.Server.Controllers
             }
         }
 
-        [HttpGet("xhtlekd")]
+        [HttpGet("validate")]
         public async Task<ActionResult> CheckUser()
         {
             User currentuser = new();

@@ -7,7 +7,7 @@ function ProtectedRoutes() {
     const [waiting, setWaiting] = useState(true);
 
     useEffect(() => {
-        fetch('/weatherforecast/xhtlekd/', {
+        fetch('/weatherforecast/validate/', {
             method: "GET",
             credentials: "include"
         }).then(response => {

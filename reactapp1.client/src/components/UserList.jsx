@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import formatDate from '../helpers/dateHelper';
 import { isAdmin, isRegular, isSuperAdmin } from '../helpers/userHelper';
 import Avatar from 'react-avatar';
@@ -8,6 +8,35 @@ function UserList() {
 
     document.title = "Users";
     const [users, setUsers] = useState([]);
+
+    const [image, setImage] = useState("");
+    const inputFile = useRef();
+
+    async function handleFileUpload(e) {
+        const file = e.target.files[0];
+        const fileName = file.name;
+        if (file) {
+            const response = await axios.post('weatherforecast/avatar',
+                {
+                    formFile: file,
+                    fileName: fileName,
+                    userId: userInfo.id,
+                },
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                }).catch(error => {
+                    console.log("Error upload: ", error);
+                });
+
+            //setImage(files[0]);
+        }
+    };
+
+    const selectFileHandler = () => {
+        inputFile.current.click();
+    }
 
     useEffect(() => {
 
@@ -60,47 +89,61 @@ function UserList() {
                 <h1>Users</h1>
             </header>
                 {
-                    users &&
+                users &&
+                <>
+                    <input
+                        style={{ display: "none" }}
+                        ref={inputFile}
+                        onChange={handleFileUpload}
+                        type="file"
+                    />
                             <table>
-                                <thead>
-                                    <tr>
-                                        <th></th>
-                                        <th>UserName</th>
-                                        <th>Email</th>
-                                        <th>Last Login Date</th>
-                                        <th>Login Count</th>
-                                        <th>Role Name</th>
-                                        <th>Action</th>
-                                        <th>Delete</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {
-                                        users.map((user) =>
-                                            <tr key={user.id}>
-                                                <td><Avatar googleId="118096717852922241760" size="50" round={true} /></td>
-                                                <td>{user.userName}</td>
-                                                <td>{user.email}</td>
-                                                <td>{formatDate(user.lastLoginDate, "DD/MM/yyyy HH:mm:ss")}</td>
-                                                <td>{user.loginCount}</td>
-                                                <td>{user.roleName}</td>
-                                                <td>
-                                                    {
-                                                        !isSuperAdmin(user) &&
-                                                        <button onClick={handleRoleChange.bind(null, user)}>Make {isRegular(user) ? 'Admin' : 'Regular'}</button>
-                                                    }      
-                                                </td>
-                                                <td>
-                                                    {
-                                                        !isSuperAdmin(user) &&
-                                                        <button onClick={handleDelete.bind(null, user.id)}>Delete</button>
-                                                    }
-                                                </td>
-                                            </tr>
-                                        )
-                                    }
-                                </tbody>
-                            </table>
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>UserName</th>
+                                            <th>Email</th>
+                                            <th>Last Login Date</th>
+                                            <th>Login Count</th>
+                                            <th>Role Name</th>
+                                            <th>Change Role</th>
+                                            <th>Set Avatar</th>
+                                            <th>Delete</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {
+                                            users.map((user) =>
+                                                <tr key={user.id}>
+                                                    <td><Avatar googleId="118096717852922241760" size="50" round={true} /></td>
+                                                    <td>{user.userName}</td>
+                                                    <td>{user.email}</td>
+                                                    <td>{formatDate(user.lastLoginDate, "DD/MM/yyyy HH:mm:ss")}</td>
+                                                    <td>{user.loginCount}</td>
+                                                    <td>{user.roleName}</td>
+                                                    <td>
+                                                        {
+                                                            !isSuperAdmin(user) &&
+                                                            <button onClick={handleRoleChange.bind(null, user)}>Make {isRegular(user) ? 'Admin' : 'Regular'}</button>
+                                                        }      
+                                                    </td>
+                                                    <td>
+                                                        {
+                                                            <button onClick={selectFileHandler}>Choose File</button>
+                                                        }
+                                                    </td>
+                                                    <td>
+                                                        {
+                                                            !isSuperAdmin(user) &&
+                                                            <button onClick={handleDelete.bind(null, user.id)}>Delete</button>
+                                                        }
+                                                    </td>
+                                                </tr>
+                                            )
+                                        }
+                                    </tbody>
+                                </table>
+                            </>
                 }
         </section>
     );
