@@ -2,11 +2,14 @@ import { useEffect, useState, useRef } from 'react';
 import formatDate from '../helpers/dateHelper';
 import Avatar from 'react-avatar';
 import axios from 'axios';
+import {API_URL} from '../../apiUrl.js';
 
 function Home() {
 
     document.title = "Welcome";
     const [userInfo, setUserInfo] = useState({});
+
+    const [avatar, setAvatar] = useState("");
 
     const [image, setImage] = useState("");
     const inputFile = useRef(null);
@@ -17,6 +20,7 @@ function Home() {
             method: "GET",
             credentials: "include"
         }).then(response => response.json()).then(data => {
+            setAvatar(API_URL + data.userInfo.avatar);
             setUserInfo(data.userInfo);
             console.log("user info: ", data.userInfo);
         }).catch(error => {
@@ -58,8 +62,8 @@ function Home() {
                     <div>
                         <br />
                         <header>
-                            <Avatar onClick={selectFileHandler} alt="text" src={userInfo.avatar} size="100" round={true} />
-                            <span>Welcome to your page, {userInfo.userName} !</span>
+                            <Avatar onClick={selectFileHandler} src={avatar} size="100" round={true} />
+                            <span>Welcome to your page, {userInfo.userName}!</span>
                         </header>
                         <br/>
                         <table>
