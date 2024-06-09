@@ -43,9 +43,17 @@ namespace ReactApp1.Server
 
             }).AddEntityFrameworkStores<AppDBContext>();
 
+            builder.Services.AddSwaggerGen();
+
             var app = builder.Build();
 
             app.UseStaticFiles();
+
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI();
+            }
 
             // Configure the HTTP request pipeline.
 
