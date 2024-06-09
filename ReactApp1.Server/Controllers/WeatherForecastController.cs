@@ -123,7 +123,7 @@ namespace ReactApp1.Server.Controllers
                 var r1 = (AppUserRole)Enum.Parse(typeof(AppUserRole), currentUserRole);
                 var r2 = (AppUserRole)Enum.Parse(typeof(AppUserRole), userToDeleteRole);
 
-                bool isDeletePermitted = DeleteUserValidator.IsDeletePermitted(currentUser.Id, userToDelete.Id, r2, r1);
+                bool isDeletePermitted = UserOperationsValidator.IsDeletePermitted(currentUser.Id, userToDelete.Id, r2, r1);
 
                 if (!isDeletePermitted)
                 {
@@ -163,11 +163,11 @@ namespace ReactApp1.Server.Controllers
             var r1 = (AppUserRole)Enum.Parse(typeof(AppUserRole), currentUserRole);
             var r2 = (AppUserRole)Enum.Parse(typeof(AppUserRole), userToChangeRole);
 
-            bool isChangeRolePermitted = ChangeUserRoleValidator.IsChangeRolePermitted(currentUser.Id, userToChange.Id, r2, r1);
+            bool isChangeRolePermitted = UserOperationsValidator.IsChangeRolePermitted(currentUser.Id, userToChange.Id, r2, r1);
 
             if (!isChangeRolePermitted)
             {
-                return Forbid("Delete forbidden");
+                return Forbid("Change Role forbidden");
             }
 
             await _userManager.RemoveFromRolesAsync(userToChange, [AppUserRole.Admin.ToString(), AppUserRole.Regular.ToString()]);
@@ -261,6 +261,19 @@ namespace ReactApp1.Server.Controllers
             if (_user == null)
             {
                 return BadRequest("");
+            }
+            var currentUser = await _userManager.GetUserAsync(HttpContext.User);
+
+            var currentUserRole = (await _userManager.GetRolesAsync(currentUser)).FirstOrDefault();
+            var roleToSetAvatar = (await _userManager.GetRolesAsync(_user)).FirstOrDefault();
+            var r1 = (AppUserRole)Enum.Parse(typeof(AppUserRole), currentUserRole);
+            var r2 = (AppUserRole)Enum.Parse(typeof(AppUserRole), roleToSetAvatar);
+
+            bool isSetAvatarPermitted = UserOperationsValidator.IsSetAvatarPermitted(currentUser.Id, _user.Id, r2, r1);
+
+            if (!isSetAvatarPermitted)
+            {
+                return Forbid("Set Avatar forbidden");
             }
 
             var uploadsFolder = Path.Combine("wwwRoot", "Avatars");
