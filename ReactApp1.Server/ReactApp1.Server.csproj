@@ -10,17 +10,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Avatars\89d01b6b-d2ee-4ef0-9cb9-a3fcb903a7c7_CV_img.jpg" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="Avatars\89d01b6b-d2ee-4ef0-9cb9-a3fcb903a7c7_CV_img.jpg">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="13.0.1" />
     <PackageReference Include="AutoMapper.Collection" Version="10.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.6" />
@@ -44,6 +33,7 @@
 
   <ItemGroup>
     <Folder Include="wwwRoot\" />
+    <Folder Include="wwwroot\Avatars\" />
   </ItemGroup>
 
 </Project>
