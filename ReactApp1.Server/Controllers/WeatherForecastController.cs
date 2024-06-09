@@ -150,20 +150,30 @@ namespace ReactApp1.Server.Controllers
         [HttpPut("changerole"), Authorize(Roles ="Admin,SuperAdmin")]
         public async Task<ActionResult> ChangeUserRole(ChangeRoleRequest changeRoleRequest)
         {
-            var data = await _appDBContext.Users
-                .Where(u => u.Id == changeRoleRequest.Id)
-                .Include(x => x.UserRoles)
-                .ThenInclude(r => r.Role)
-                .FirstOrDefaultAsync();
+            var userToChange = await _userManager.FindByIdAsync(changeRoleRequest.Id);
 
-            if (data == null) {
+            if (userToChange == null) {
                 return BadRequest();
             }
 
-            await _userManager.RemoveFromRolesAsync(data, [AppUserRole.Admin.ToString(), AppUserRole.Regular.ToString()]);
-            await _userManager.AddToRoleAsync(data, changeRoleRequest.Role);
+            var currentUser = await _userManager.GetUserAsync(HttpContext.User);
 
-            var result = _mapper.Map<UserResponse>(data);
+            var currentUserRole = (await _userManager.GetRolesAsync(currentUser)).FirstOrDefault();
+            var userToChangeRole = (await _userManager.GetRolesAsync(userToChange)).FirstOrDefault();
+            var r1 = (AppUserRole)Enum.Parse(typeof(AppUserRole), currentUserRole);
+            var r2 = (AppUserRole)Enum.Parse(typeof(AppUserRole), userToChangeRole);
+
+            bool isChangeRolePermitted = ChangeUserRoleValidator.IsChangeRolePermitted(currentUser.Id, userToChange.Id, r2, r1);
+
+            if (!isChangeRolePermitted)
+            {
+                return Forbid("Delete forbidden");
+            }
+
+            await _userManager.RemoveFromRolesAsync(userToChange, [AppUserRole.Admin.ToString(), AppUserRole.Regular.ToString()]);
+            await _userManager.AddToRoleAsync(userToChange, changeRoleRequest.Role);
+
+            var result = _mapper.Map<UserResponse>(userToChange);
             result.RoleName = changeRoleRequest.Role;
 
             return Ok(new { updatedUser = result });
