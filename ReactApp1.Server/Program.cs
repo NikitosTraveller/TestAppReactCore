@@ -47,7 +47,7 @@ namespace ReactApp1.Server
 
             app.UseStaticFiles(new StaticFileOptions
             {
-                FileProvider = new PhysicalFileProvider(Path.Combine(builder.Environment.ContentRootPath, "Avatars")),
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Avatars")),
                 RequestPath = "/Avatars"
             });
 

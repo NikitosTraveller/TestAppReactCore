@@ -174,7 +174,7 @@ namespace ReactApp1.Server.Controllers
             else
             {
                 var resultUser = _mapper.Map<UserResponse>(userInfo);
-                var u = String.Format("{0}://{1}{2}/Avatars/{3}", Request.Scheme, Request.Host, Request.PathBase, "89d01b6b-d2ee-4ef0-9cb9-a3fcb903a7c7_CV_img.jpg");
+                var u = string.Format("{0}://{1}{2}/Avatars/{3}", Request.Scheme, Request.Host, Request.PathBase, userInfo.Avatar);
                 resultUser.Avatar = u; // Path.Combine(_hostEnvironment.ContentRootPath, "Avatars", "89d01b6b-d2ee-4ef0-9cb9-a3fcb903a7c7_CV_img.jpg"); ;
                 return Ok(new { userInfo = resultUser });
             }
@@ -213,7 +213,12 @@ namespace ReactApp1.Server.Controllers
             if (uploadFileRequest.FormFile == null || uploadFileRequest.FormFile.Length == 0)
                 return BadRequest("No file uploaded.");
 
-            //uploadFileRequest.FormFile.
+            var _user = await _userManager.FindByIdAsync(uploadFileRequest.UserId);
+
+            if (_user == null)
+            {
+                return BadRequest("");
+            }
 
             var uploadsFolder = Path.Combine("wwwroot", "Avatars");
             if (!Directory.Exists(uploadsFolder))
@@ -230,6 +235,10 @@ namespace ReactApp1.Server.Controllers
             }
 
             var avatarUrl = Url.Content($"~/Avatars/{uniqueFileName}");
+
+            _user.Avatar = uniqueFileName;
+
+            await _userManager.UpdateAsync(_user);
 
             return Ok(new { avatarUrl });
         }
