@@ -2,16 +2,21 @@ import { useEffect, useState, useRef } from 'react';
 import formatDate from '../helpers/dateHelper';
 import Avatar from 'react-avatar';
 import axios from 'axios';
-import {API_URL} from '../../apiUrl.js';
+import { API_URL } from '../../apiUrl.js';
+import { useNavigate } from "react-router-dom";
+import { isSuperAdmin} from '../helpers/userHelper';
 
 function Home() {
 
     document.title = "Welcome";
     const [userInfo, setUserInfo] = useState({});
 
+    const [possibleToDelete, setPossibleToDelete] = useState(false);
+
+    const navigate = useNavigate();
+
     const [avatar, setAvatar] = useState("");
 
-    const [image, setImage] = useState("");
     const inputFile = useRef(null);
 
     useEffect(() => {
@@ -21,6 +26,7 @@ function Home() {
             credentials: "include"
         }).then(response => response.json()).then(data => {
             setAvatar(API_URL + data.userInfo.avatar);
+            setPossibleToDelete(isSuperAdmin(data.userInfo.roleName));
             setUserInfo(data.userInfo);
             console.log("user info: ", data.userInfo);
         }).catch(error => {
@@ -46,14 +52,25 @@ function Home() {
             {
                 console.log("Error upload: ", error);
             });
-
-            //setImage(files[0]);
         }
     };
 
     const selectFileHandler = () => {
         inputFile.current.click();
     }
+
+    async function handleDelete() {
+        let result = await axios.delete("weatherforecast/delete/" + userInfo.id)
+            .then(response => {
+                localStorage.removeItem("user");
+                localStorage.removeItem("role");
+                navigate("/login");
+            }).catch(error => {
+                console.log("Error delete current user: ", error);
+            });
+    }
+
+    const isAvailiableToDelete = () => !isSuperAdmin(userInfo.roleName);
 
     return (
         <section className='page'>
@@ -73,6 +90,7 @@ function Home() {
                                     <th>Last Login Date</th>
                                     <th>Login Count</th>
                                     <th>Role Name</th>
+                                    <th>Delete Account</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -81,6 +99,9 @@ function Home() {
                                     <td>{formatDate(userInfo.lastLoginDate, "DD/MM/yyyy HH:mm:ss")}</td>
                                     <td>{userInfo.loginCount}</td>
                                     <td>{userInfo.roleName}</td>
+                                    <td>
+                                        <button hidden={possibleToDelete} onClick={handleDelete}>Delete</button>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>

@@ -24,12 +24,8 @@ function UserList() {
             return user.email !== currentUserEmail;
         }
 
-        if (isRegular(currentUserRole)) {
-            return false;
-        }
-
         if (isAdmin(currentUserRole)) {
-            return !isSuperAdmin(user.roleName) && (user.email !== currentUserEmail);
+            return !isSuperAdmin(user.roleName);
         }
         return false;
     };
@@ -38,10 +34,6 @@ function UserList() {
     {
         if (isSuperAdmin(currentUserRole)) {
             return user.email !== currentUserEmail;
-        }
-
-        if (isRegular(currentUserRole)) {
-            return user.email === currentUserEmail;
         }
 
         if (isAdmin(currentUserRole)) {
@@ -54,10 +46,6 @@ function UserList() {
     {
         if (isSuperAdmin(currentUserRole)) {
             return true;
-        }
-
-        if (isRegular(currentUserRole)) {
-            return user.email === currentUserEmail;
         }
 
         if (isAdmin(currentUserRole)) {
@@ -154,7 +142,7 @@ function UserList() {
     return (
         <section className='admin-page page'>
             <header>
-                <h1>Users</h1>
+                <h1>User Management</h1>
             </header>
                 {
                 users &&

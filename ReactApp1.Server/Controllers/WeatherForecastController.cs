@@ -149,7 +149,15 @@ namespace ReactApp1.Server.Controllers
         [HttpGet("users"), Authorize]
         public async Task<ActionResult> GetAllUsers()
         {
+            var currentUser = await _userManager.GetUserAsync(HttpContext.User);
+
+            if (currentUser == null)
+            {
+                return Forbid();
+            }
+
             var data = await _appDBContext.Users
+                .Where(u => u.Id != currentUser.Id)
                 .Include(x => x.UserRoles)
                 .ThenInclude(r => r.Role)
                 .ToListAsync();
@@ -240,8 +248,6 @@ namespace ReactApp1.Server.Controllers
             {
                 await uploadFileRequest.FormFile.CopyToAsync(fileStream);
             }
-
-            var avatarUrl = Url.Content($"~/Avatars/{uniqueFileName}");
 
             _user.Avatar = $"/Avatars/{uniqueFileName}";
 
