@@ -1,5 +1,13 @@
-export const isSuperAdmin = (user) => user && user.roleName && user.roleName === 'SuperAdmin';
+const adminRole = 'Admin';
 
-export const isAdmin = (user) => user && user.roleName && user.roleName === 'Admin';
+const superAdminRole = 'SuperAdmin';
 
-export const isRegular = (user) => user && user.roleName && user.roleName === 'Regular';
+const regularRole = 'Regular';
+
+/////////////////////////////////////////////////////
+
+export const isSuperAdmin = (roleName) => roleName === superAdminRole;
+
+export const isAdmin = (roleName) => roleName === adminRole;
+
+export const isRegular = (roleName) => roleName === regularRole;

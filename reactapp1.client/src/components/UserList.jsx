@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import formatDate from '../helpers/dateHelper';
-import { isAdmin, isRegular, isSuperAdmin } from '../helpers/userHelper';
+import { isAdmin, isRegular, isSuperAdmin} from '../helpers/userHelper';
 import Avatar from 'react-avatar';
 import axios from 'axios';
 
@@ -11,6 +11,8 @@ function UserList() {
 
     const [image, setImage] = useState("");
     const inputFile = useRef();
+
+    const currentUserRole = localStorage.getItem("role");
 
     const [selectedUserId, setSelectedUserId] = useState("");
 
@@ -126,8 +128,8 @@ function UserList() {
                                                     <td>{user.roleName}</td>
                                                     <td>
                                                         {
-                                                            !isSuperAdmin(user) &&
-                                                            <button onClick={handleRoleChange.bind(null, user)}>Make {isRegular(user) ? 'Admin' : 'Regular'}</button>
+                                                            !isSuperAdmin(user.roleName) && !isRegular(currentUserRole) &&
+                                                            <button onClick={handleRoleChange.bind(null, user)}>Make {isRegular(user.roleName) ? 'Admin' : 'Regular'}</button>
                                                         }      
                                                     </td>
                                                     <td>
@@ -137,7 +139,7 @@ function UserList() {
                                                     </td>
                                                     <td>
                                                         {
-                                                            !isSuperAdmin(user) &&
+                                                            !isSuperAdmin(user.roleName) &&
                                                             <button onClick={handleDelete.bind(null, user.id)}>Delete</button>
                                                         }
                                                     </td>

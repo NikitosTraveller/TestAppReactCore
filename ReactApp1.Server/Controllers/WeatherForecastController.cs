@@ -174,8 +174,8 @@ namespace ReactApp1.Server.Controllers
             else
             {
                 var resultUser = _mapper.Map<UserResponse>(userInfo);
-                var u = string.Format("{0}://{1}{2}/Avatars/{3}", Request.Scheme, Request.Host, Request.PathBase, userInfo.Avatar);
-                resultUser.Avatar = u; // Path.Combine(_hostEnvironment.ContentRootPath, "Avatars", "89d01b6b-d2ee-4ef0-9cb9-a3fcb903a7c7_CV_img.jpg"); ;
+                //var u = string.Format("{0}://{1}{2}/Avatars/{3}", Request.Scheme, Request.Host, Request.PathBase, userInfo.Avatar);
+                resultUser.Avatar = Path.Combine(_hostEnvironment.ContentRootPath, "Avatars", userInfo.Avatar ?? "");
                 return Ok(new { userInfo = resultUser });
             }
         }
@@ -204,10 +204,12 @@ namespace ReactApp1.Server.Controllers
                 return BadRequest(new { message = "Something went wrong please try again. " + ex.Message });
             }
 
-            return Ok(new { message = "Logged in", user = currentuser });
+            var roles = await _userManager.GetRolesAsync(currentuser);
+
+            return Ok(new { message = "Logged in", user = new UserResponse() { Email = currentuser.Email, RoleName = roles.FirstOrDefault() ?? AppUserRole.Regular.ToString() } });
         }
 
-        [HttpPost("avatar")]
+        [HttpPost("avatar"), Authorize]
         public async Task<IActionResult> UploadAvatar([FromForm] UploadFileRequest uploadFileRequest)
         {
             if (uploadFileRequest.FormFile == null || uploadFileRequest.FormFile.Length == 0)

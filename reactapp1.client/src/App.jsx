@@ -39,7 +39,7 @@ function App() {
         const data = await response.json();
         if (response.ok) {
             localStorage.removeItem("user");
-
+            localStorage.removeItem("role");
             alert(data.message);
 
             document.location = "/login";
