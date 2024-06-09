@@ -118,7 +118,7 @@ function UserList() {
                                         {
                                             users.map((user) =>
                                                 <tr key={user.id}>
-                                                    <td><Avatar googleId="118096717852922241760" size="50" round={true} /></td>
+                                                    <td><Avatar src={ user.avatar} size="50" round={true} /></td>
                                                     <td>{user.userName}</td>
                                                     <td>{user.email}</td>
                                                     <td>{formatDate(user.lastLoginDate, "DD/MM/yyyy HH:mm:ss")}</td>
