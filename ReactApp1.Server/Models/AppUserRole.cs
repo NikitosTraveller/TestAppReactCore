@@ -5,7 +5,7 @@ namespace ReactApp1.Server.Models
 {
     public enum AppUserRole
     {
-        SuperAdmin = 0,
+        SuperAdmin,
         Admin,
         Regular
     }

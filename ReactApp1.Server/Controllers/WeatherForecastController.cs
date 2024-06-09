@@ -212,8 +212,10 @@ namespace ReactApp1.Server.Controllers
         [HttpPost("avatar"), Authorize]
         public async Task<IActionResult> UploadAvatar([FromForm] UploadFileRequest uploadFileRequest)
         {
-            if (uploadFileRequest.FormFile == null || uploadFileRequest.FormFile.Length == 0)
-                return BadRequest("No file uploaded.");
+            if(!ModelState.IsValid || uploadFileRequest.FormFile.Length > 20*1024)
+            {
+                return BadRequest("Error while uploading.");
+            }
 
             var _user = await _userManager.FindByIdAsync(uploadFileRequest.UserId);
 
