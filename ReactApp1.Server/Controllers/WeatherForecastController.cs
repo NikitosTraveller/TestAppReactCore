@@ -174,8 +174,6 @@ namespace ReactApp1.Server.Controllers
             else
             {
                 var resultUser = _mapper.Map<UserResponse>(userInfo);
-                var u = string.Format("/Avatars/{0}", userInfo.Avatar);
-                resultUser.Avatar = u; // Path.Combine(_hostEnvironment.ContentRootPath, "Avatars", userInfo.Avatar ?? "");
                 return Ok(new { userInfo = resultUser });
             }
         }
@@ -245,11 +243,11 @@ namespace ReactApp1.Server.Controllers
 
             var avatarUrl = Url.Content($"~/Avatars/{uniqueFileName}");
 
-            _user.Avatar = uniqueFileName;
+            _user.Avatar = $"/Avatars/{uniqueFileName}";
 
             await _userManager.UpdateAsync(_user);
 
-            return Ok(new { avatarUrl });
+            return Ok(new { user = _mapper.Map<UserResponse>(_user) });
         }
     }
 }

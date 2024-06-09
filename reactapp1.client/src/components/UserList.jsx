@@ -3,6 +3,7 @@ import formatDate from '../helpers/dateHelper';
 import { adminRole, isAdmin, isRegular, isSuperAdmin, regularRole } from '../helpers/userHelper';
 import Avatar from 'react-avatar';
 import axios from 'axios';
+import { API_URL } from '../../apiUrl.js';
 
 function UserList() {
 
@@ -79,6 +80,19 @@ function UserList() {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }
+                }).then(response =>  {
+                    const _updatedUser = response.data.user;
+
+                    const currentUserIndex = users.findIndex((u) => u.email === _updatedUser.email);
+                    const updatedUser = { ...users[currentUserIndex], avatar: _updatedUser.avatar };
+
+                    const newList = [
+                        ...users.slice(0, currentUserIndex),
+                        updatedUser,
+                        ...users.slice(currentUserIndex + 1)
+                    ];
+                    setUsers(newList);
+
                 }).catch(error => {
                     console.log("Error upload: ", error);
                 });
@@ -131,7 +145,7 @@ function UserList() {
                 updatedUser,
                 ...users.slice(currentUserIndex + 1)
             ];
-            setUsers(newList);;
+            setUsers(newList);
         }).catch(error => {
             console.log("Error home page: ", error);
         });
@@ -169,7 +183,7 @@ function UserList() {
                                         {
                                             users.map((user) =>
                                                 <tr key={user.id}>
-                                                    <td><Avatar src={ user.avatar} size="50" round={true} /></td>
+                                                    <td><Avatar src={API_URL + user.avatar} size="50" round={true} /></td>
                                                     <td>{user.userName}</td>
                                                     <td>{user.email}</td>
                                                     <td>{formatDate(user.lastLoginDate, "DD/MM/yyyy HH:mm:ss")}</td>
