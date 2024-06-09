@@ -124,7 +124,7 @@ namespace ReactApp1.Server.Controllers
             }
         }
 
-        [HttpPut("changerole"), Authorize]
+        [HttpPut("changerole"), Authorize(Roles ="Admin,SuperAdmin")]
         public async Task<ActionResult> ChangeUserRole(ChangeRoleRequest changeRoleRequest)
         {
             var data = await _appDBContext.Users
