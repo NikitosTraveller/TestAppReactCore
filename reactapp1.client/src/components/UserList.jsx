@@ -109,12 +109,12 @@ function UserList() {
 
     async function handleDelete(id) {
         let result = await axios.delete("weatherforecast/delete/" + id)
-            .then(response => response.json()).then(data =>
+            .then(response =>
             {
                 const updatedList = users.filter(user => user.id !== id);
                 setUsers(updatedList);
         }).catch(error => {
-            console.log("Error home page: ", error);
+            console.log("Error deleteing from user list: ", error);
         });
     }
 

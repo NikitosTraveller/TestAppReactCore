@@ -4,10 +4,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ReactApp1.Server.Models;
+using ReactApp1.Server.Validators;
 using System;
 using System.Security.Claims;
 using TestApp.Server.Data;
 using TestApp.Server.Models;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ReactApp1.Server.Controllers
 {
@@ -108,15 +110,36 @@ namespace ReactApp1.Server.Controllers
         {
             try
             {
-                User userInfo = await _userManager.FindByIdAsync(id);
+                User? userToDelete = await _userManager.FindByIdAsync(id);
 
-                if (userInfo == null) {
+                if (userToDelete == null) {
                     return BadRequest(new {message = "User doesn't exist!"});
                 }
 
-                var result = await _userManager.DeleteAsync(userInfo);
+                var currentUser = await _userManager.GetUserAsync(HttpContext.User);
 
-                return Ok(result);
+                var currentUserRole = (await _userManager.GetRolesAsync(currentUser)).FirstOrDefault();
+                var userToDeleteRole = (await _userManager.GetRolesAsync(userToDelete)).FirstOrDefault();
+                var r1 = (AppUserRole)Enum.Parse(typeof(AppUserRole), currentUserRole);
+                var r2 = (AppUserRole)Enum.Parse(typeof(AppUserRole), userToDeleteRole);
+
+                bool isDeletePermitted = DeleteUserValidator.IsDeletePermitted(currentUser.Id, userToDelete.Id, r2, r1);
+
+                if (!isDeletePermitted)
+                {
+                    return Forbid("Delete forbidden");
+                }
+
+                await _userManager.RemoveFromRolesAsync(userToDelete, [AppUserRole.Admin.ToString(), AppUserRole.Regular.ToString()]);
+                var result = await _userManager.DeleteAsync(userToDelete);
+
+                if (result.Succeeded)
+                {
+                    return Ok("Deleted");
+                }
+
+                return BadRequest("Someting went wrong, please try again.");
+
             }
             catch (Exception ex)
             {
