@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import formatDate from '../helpers/dateHelper';
-import { isAdmin, isRegular, isSuperAdmin} from '../helpers/userHelper';
+import { adminRole, isAdmin, isRegular, isSuperAdmin, regularRole } from '../helpers/userHelper';
 import Avatar from 'react-avatar';
 import axios from 'axios';
 
@@ -13,8 +13,57 @@ function UserList() {
     const inputFile = useRef();
 
     const currentUserRole = localStorage.getItem("role");
+    const currentUserEmail = localStorage.getItem("user");
 
     const [selectedUserId, setSelectedUserId] = useState("");
+
+    const showChangeRoleButton = (user) =>
+    {
+        if (isSuperAdmin(currentUserRole)) {
+            return user.email !== currentUserEmail;
+        }
+
+        if (isRegular(currentUserRole)) {
+            return false;
+        }
+
+        if (isAdmin(currentUserRole)) {
+            return !isSuperAdmin(user.roleName) && (user.email !== currentUserEmail);
+        }
+        return false;
+    };
+
+    const showDeleteButton = (user) =>
+    {
+        if (isSuperAdmin(currentUserRole)) {
+            return user.email !== currentUserEmail;
+        }
+
+        if (isRegular(currentUserRole)) {
+            return user.email === currentUserEmail;
+        }
+
+        if (isAdmin(currentUserRole)) {
+            return isRegular(user.roleName);
+        }
+        return false;
+    };
+
+    const showSetAvatarButton = (user) =>
+    {
+        if (isSuperAdmin(currentUserRole)) {
+            return true;
+        }
+
+        if (isRegular(currentUserRole)) {
+            return user.email === currentUserEmail;
+        }
+
+        if (isAdmin(currentUserRole)) {
+            return !isSuperAdmin(user.roleName);
+        }
+        return false;
+    };
 
     async function handleFileUpload(e) {
         const file = e.target.files[0];
@@ -69,7 +118,7 @@ function UserList() {
 
     async function handleRoleChange(user) {
         let result = await axios.put("weatherforecast/changerole", {
-            role: isAdmin(user) ? 'Regular' : 'Admin',
+            role: isAdmin(user.roleName) ? regularRole : adminRole,
             id: user.id,
         }).then(function (response) {
             const _updatedUser = response.data.updatedUser;
@@ -128,18 +177,19 @@ function UserList() {
                                                     <td>{user.roleName}</td>
                                                     <td>
                                                         {
-                                                            !isSuperAdmin(user.roleName) && !isRegular(currentUserRole) &&
-                                                            <button onClick={handleRoleChange.bind(null, user)}>Make {isRegular(user.roleName) ? 'Admin' : 'Regular'}</button>
+                                                            showChangeRoleButton(user) &&
+                                                            <button onClick={handleRoleChange.bind(null, user)}>Make {isRegular(user.roleName) ? adminRole : regularRole}</button>
                                                         }      
                                                     </td>
                                                     <td>
                                                         {
+                                                            showSetAvatarButton(user) &&
                                                             <button onClick={selectFileHandler.bind(null, user.id)}>Choose File</button>
                                                         }
                                                     </td>
                                                     <td>
                                                         {
-                                                            !isSuperAdmin(user.roleName) &&
+                                                            showDeleteButton(user) &&
                                                             <button onClick={handleDelete.bind(null, user.id)}>Delete</button>
                                                         }
                                                     </td>

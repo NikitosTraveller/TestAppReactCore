@@ -1,8 +1,8 @@
-const adminRole = 'Admin';
+export const adminRole = 'Admin';
 
-const superAdminRole = 'SuperAdmin';
+export const superAdminRole = 'SuperAdmin';
 
-const regularRole = 'Regular';
+export const regularRole = 'Regular';
 
 /////////////////////////////////////////////////////
 
