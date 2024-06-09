@@ -213,6 +213,8 @@ namespace ReactApp1.Server.Controllers
             if (uploadFileRequest.FormFile == null || uploadFileRequest.FormFile.Length == 0)
                 return BadRequest("No file uploaded.");
 
+            //uploadFileRequest.FormFile.
+
             var uploadsFolder = Path.Combine("wwwroot", "Avatars");
             if (!Directory.Exists(uploadsFolder))
             {

@@ -12,6 +12,8 @@ function UserList() {
     const [image, setImage] = useState("");
     const inputFile = useRef();
 
+    const [selectedUserId, setSelectedUserId] = useState("");
+
     async function handleFileUpload(e) {
         const file = e.target.files[0];
         const fileName = file.name;
@@ -20,7 +22,7 @@ function UserList() {
                 {
                     formFile: file,
                     fileName: fileName,
-                    userId: userInfo.id,
+                    userId: selectedUserId,
                 },
                 {
                     headers: {
@@ -34,7 +36,8 @@ function UserList() {
         }
     };
 
-    const selectFileHandler = () => {
+    const selectFileHandler = (userId) => {
+        setSelectedUserId(userId);
         inputFile.current.click();
     }
 
@@ -129,7 +132,7 @@ function UserList() {
                                                     </td>
                                                     <td>
                                                         {
-                                                            <button onClick={selectFileHandler}>Choose File</button>
+                                                            <button onClick={selectFileHandler.bind(null, user.id)}>Choose File</button>
                                                         }
                                                     </td>
                                                     <td>
