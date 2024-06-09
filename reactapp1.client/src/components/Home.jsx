@@ -58,7 +58,7 @@ function Home() {
                     <div>
                         <br />
                         <header>
-                            <img onClick={selectFileHandler} alt="text" src={userInfo.avatar} />
+                            <Avatar onClick={selectFileHandler} alt="text" src={userInfo.avatar} size="100" round={true} />
                             <span>Welcome to your page, {userInfo.userName} !</span>
                         </header>
                         <br/>

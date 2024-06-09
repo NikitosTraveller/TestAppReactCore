@@ -45,11 +45,7 @@ namespace ReactApp1.Server
 
             var app = builder.Build();
 
-            app.UseStaticFiles(new StaticFileOptions
-            {
-                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Avatars")),
-                RequestPath = "/Avatars"
-            });
+            app.UseStaticFiles();
 
             // Configure the HTTP request pipeline.
 

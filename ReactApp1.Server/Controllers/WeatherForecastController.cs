@@ -174,8 +174,8 @@ namespace ReactApp1.Server.Controllers
             else
             {
                 var resultUser = _mapper.Map<UserResponse>(userInfo);
-                //var u = string.Format("{0}://{1}{2}/Avatars/{3}", Request.Scheme, Request.Host, Request.PathBase, userInfo.Avatar);
-                resultUser.Avatar = Path.Combine(_hostEnvironment.ContentRootPath, "Avatars", userInfo.Avatar ?? "");
+                var u = string.Format("/Avatars/{0}", userInfo.Avatar);
+                resultUser.Avatar = u; // Path.Combine(_hostEnvironment.ContentRootPath, "Avatars", userInfo.Avatar ?? "");
                 return Ok(new { userInfo = resultUser });
             }
         }
@@ -224,7 +224,7 @@ namespace ReactApp1.Server.Controllers
                 return BadRequest("");
             }
 
-            var uploadsFolder = "Avatars";
+            var uploadsFolder = Path.Combine("wwwRoot", "Avatars");
             if (!Directory.Exists(uploadsFolder))
             {
                 Directory.CreateDirectory(uploadsFolder);
