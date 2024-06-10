@@ -28,6 +28,11 @@ namespace ReactApp1.Server.Services
             return await _userManager.DeleteAsync(user);
         }
 
+        public async Task<User> GetUserByEmailAsync(string email)
+        {
+            return await _userManager.FindByEmailAsync(email);
+        }
+
         public async Task<User> GetUserByIdAsync(string userId)
         {
             return await _userManager.FindByIdAsync(userId);

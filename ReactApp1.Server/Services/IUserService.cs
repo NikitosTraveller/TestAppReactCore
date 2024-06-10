@@ -17,6 +17,8 @@ namespace ReactApp1.Server.Services
 
         public Task<User> GetUserByIdAsync(string userId);
 
+        public Task<User> GetUserByEmailAsync(string email);
+
         public Task<IdentityResult> UpdateUserAsync(User user);
     }
 }

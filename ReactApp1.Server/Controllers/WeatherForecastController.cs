@@ -56,9 +56,7 @@ namespace ReactApp1.Server.Controllers
 
             try
             {
-                User? _user = _appDBContext.Users
-                    .Where(u => u.Email == loginRequest.Email)
-                    .FirstOrDefault(); 
+                User? _user = await _userService.GetUserByEmailAsync(loginRequest.Email);
 
                 if (_user != null)
                 {
