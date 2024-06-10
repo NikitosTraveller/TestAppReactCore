@@ -14,5 +14,9 @@ namespace ReactApp1.Server.Services
         public Task<IdentityResult> ChangeUserRoleAsync(User user, string roleName);
 
         public Task<string> GetUserRoleAsync(User user);
+
+        public Task<User> GetUserByIdAsync(string userId);
+
+        public Task<IdentityResult> UpdateUserAsync(User user);
     }
 }

@@ -105,7 +105,7 @@ namespace ReactApp1.Server.Controllers
         {
             try
             {
-                User? userToDelete = await _userManager.FindByIdAsync(id);
+                User? userToDelete = await _userService.GetUserByIdAsync(id);
 
                 if (userToDelete == null) {
                     return BadRequest(new {message = "User doesn't exist!"});
@@ -144,7 +144,7 @@ namespace ReactApp1.Server.Controllers
         [HttpPut("changerole"), Authorize(Roles ="Admin,SuperAdmin")]
         public async Task<ActionResult> ChangeUserRole(ChangeRoleRequest changeRoleRequest)
         {
-            var userToChange = await _userManager.FindByIdAsync(changeRoleRequest.Id);
+            var userToChange = await _userService.GetUserByIdAsync(changeRoleRequest.Id);
 
             if (userToChange == null) {
                 return BadRequest();
@@ -248,7 +248,7 @@ namespace ReactApp1.Server.Controllers
                 return BadRequest("Error while uploading.");
             }
 
-            var _user = await _userManager.FindByIdAsync(uploadFileRequest.UserId);
+            var _user = await _userService.GetUserByIdAsync(uploadFileRequest.UserId);
 
             if (_user == null)
             {
@@ -272,7 +272,7 @@ namespace ReactApp1.Server.Controllers
 
             _user.Avatar = $"/Avatars/{uniqueFileName}";
 
-            await _userManager.UpdateAsync(_user);
+            await _userService.UpdateUserAsync(_user);
 
             return Ok(new { user = _mapper.Map<UserResponse>(_user) });
         }
