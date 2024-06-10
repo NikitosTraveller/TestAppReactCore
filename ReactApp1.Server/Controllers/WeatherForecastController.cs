@@ -16,7 +16,7 @@ namespace ReactApp1.Server.Controllers
     [ApiController]
     [Route("[controller]")]
     public class WeatherForecastController(SignInManager<User> sm, UserManager<User> um, 
-        AppDBContext context, IWebHostEnvironment webHostEnvironment, IUserService userService, IMapper mapper) : ControllerBase
+        AppDBContext context, IUserService userService, IMapper mapper) : ControllerBase
     {
         private readonly IMapper _mapper = mapper;
 
@@ -24,7 +24,6 @@ namespace ReactApp1.Server.Controllers
         private readonly SignInManager<User> _signInManager = sm;
         private readonly UserManager<User> _userManager = um;
         private readonly AppDBContext _appDBContext = context;
-        private readonly IWebHostEnvironment _hostEnvironment = webHostEnvironment;
 
         [HttpPost("register")]
         public async Task<ActionResult> RegisterUser(RegisterRequest registerRequest)
@@ -236,9 +235,9 @@ namespace ReactApp1.Server.Controllers
                 return BadRequest(new { message = "Something went wrong please try again. " + ex.Message });
             }
 
-            var roles = await _userManager.GetRolesAsync(currentuser);
+            var role = await _userService.GetUserRoleAsync(currentuser);
 
-            return Ok(new { message = "Logged in", user = new UserResponse() { Email = currentuser.Email, RoleName = roles.FirstOrDefault() ?? AppUserRole.Regular.ToString() } });
+            return Ok(new { message = "Logged in", user = new UserResponse() { Email = currentuser.Email, RoleName = role } });
         }
 
         [HttpPost("avatar"), Authorize]
