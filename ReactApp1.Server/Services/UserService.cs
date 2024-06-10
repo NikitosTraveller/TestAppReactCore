@@ -1,13 +1,16 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
+using Microsoft.EntityFrameworkCore;
 using ReactApp1.Server.Models;
+using TestApp.Server.Data;
 using TestApp.Server.Models;
 
 namespace ReactApp1.Server.Services
 {
-    public class UserService(UserManager<User> um) : IUserService
+    public class UserService(UserManager<User> um, AppDBContext context) : IUserService
     {
         private readonly UserManager<User> _userManager = um;
+        private readonly AppDBContext _appDBContext = context;
 
         public async Task<IdentityResult> ChangeUserRoleAsync(User user, string roleName)
         {
@@ -26,6 +29,15 @@ namespace ReactApp1.Server.Services
         {
             await _userManager.RemoveFromRolesAsync(user, [AppUserRole.Admin.ToString(), AppUserRole.Regular.ToString()]);
             return await _userManager.DeleteAsync(user);
+        }
+
+        public async Task<List<User>> GetAllUsersAsync(string userId)
+        {
+            return await _appDBContext.Users
+                .Where(u => u.Id != userId)
+                .Include(x => x.UserRoles)
+                .ThenInclude(r => r.Role)
+                .ToListAsync();
         }
 
         public async Task<User> GetUserByEmailAsync(string email)

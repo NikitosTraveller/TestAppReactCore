@@ -20,5 +20,7 @@ namespace ReactApp1.Server.Services
         public Task<User> GetUserByEmailAsync(string email);
 
         public Task<IdentityResult> UpdateUserAsync(User user);
+
+        public Task<List<User>> GetAllUsersAsync(string userId);
     }
 }

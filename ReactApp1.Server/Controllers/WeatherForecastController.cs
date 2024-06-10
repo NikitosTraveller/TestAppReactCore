@@ -179,11 +179,7 @@ namespace ReactApp1.Server.Controllers
                 return Forbid();
             }
 
-            var data = await _appDBContext.Users
-                .Where(u => u.Id != currentUser.Id)
-                .Include(x => x.UserRoles)
-                .ThenInclude(r => r.Role)
-                .ToListAsync();
+            var data = await _userService.GetAllUsersAsync(currentUser.Id);
             var result = data.Select(u => _mapper.Map<UserResponse>(u)).ToList();
 
             return Ok(new { users =  result});
