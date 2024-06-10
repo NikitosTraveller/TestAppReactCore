@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.EntityFrameworkCore;
 using ReactApp1.Server.Models;
+using System.Security.Claims;
 using TestApp.Server.Data;
 using TestApp.Server.Models;
 
@@ -38,6 +39,11 @@ namespace ReactApp1.Server.Services
                 .Include(x => x.UserRoles)
                 .ThenInclude(r => r.Role)
                 .ToListAsync();
+        }
+
+        public async Task<User> GetCurrentUserAsync(ClaimsPrincipal claimsPrincipal)
+        {
+            return await _userManager.GetUserAsync(claimsPrincipal);
         }
 
         public async Task<User> GetUserByEmailAsync(string email)

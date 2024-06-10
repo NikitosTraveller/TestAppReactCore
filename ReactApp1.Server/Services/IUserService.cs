@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
 using TestApp.Server.Models;
 
 namespace ReactApp1.Server.Services
@@ -14,6 +15,8 @@ namespace ReactApp1.Server.Services
         public Task<IdentityResult> ChangeUserRoleAsync(User user, string roleName);
 
         public Task<string> GetUserRoleAsync(User user);
+
+        public Task<User> GetCurrentUserAsync(ClaimsPrincipal claimsPrincipal);
 
         public Task<User> GetUserByIdAsync(string userId);
 

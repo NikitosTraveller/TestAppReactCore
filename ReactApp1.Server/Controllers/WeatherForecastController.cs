@@ -15,14 +15,13 @@ namespace ReactApp1.Server.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class WeatherForecastController(SignInManager<User> sm, UserManager<User> um, 
-        AppDBContext context, IUserService userService, IMapper mapper) : ControllerBase
+    public class WeatherForecastController(SignInManager<User> sm, AppDBContext context, 
+        IUserService userService, IMapper mapper) : ControllerBase
     {
         private readonly IMapper _mapper = mapper;
 
         private readonly IUserService _userService = userService;
         private readonly SignInManager<User> _signInManager = sm;
-        private readonly UserManager<User> _userManager = um;
         private readonly AppDBContext _appDBContext = context;
 
         [HttpPost("register")]
@@ -109,7 +108,7 @@ namespace ReactApp1.Server.Controllers
                     return BadRequest(new {message = "User doesn't exist!"});
                 }
 
-                var currentUser = await _userManager.GetUserAsync(HttpContext.User);
+                var currentUser = await _userService.GetCurrentUserAsync(HttpContext.User);
 
                 var currentUserRole = await _userService.GetUserRoleAsync(currentUser);
                 var userToDeleteRole = await _userService.GetUserRoleAsync(userToDelete); 
@@ -148,7 +147,7 @@ namespace ReactApp1.Server.Controllers
                 return BadRequest();
             }
 
-            var currentUser = await _userManager.GetUserAsync(HttpContext.User);
+            var currentUser = await _userService.GetCurrentUserAsync(HttpContext.User);
 
             var currentUserRole = await _userService.GetUserRoleAsync(currentUser);
             var userToChangeRole = await _userService.GetUserRoleAsync(userToChange);
@@ -172,7 +171,7 @@ namespace ReactApp1.Server.Controllers
         [HttpGet("users"), Authorize]
         public async Task<ActionResult> GetAllUsers()
         {
-            var currentUser = await _userManager.GetUserAsync(HttpContext.User);
+            var currentUser = await _userService.GetCurrentUserAsync(HttpContext.User);
 
             if (currentUser == null)
             {
@@ -248,7 +247,7 @@ namespace ReactApp1.Server.Controllers
             {
                 return BadRequest("");
             }
-            var currentUser = await _userManager.GetUserAsync(HttpContext.User);
+            var currentUser = await _userService.GetCurrentUserAsync(HttpContext.User);
 
             var currentUserRole = await _userService.GetUserRoleAsync(currentUser);
             var roleToSetAvatar = await _userService.GetUserRoleAsync(_user);
