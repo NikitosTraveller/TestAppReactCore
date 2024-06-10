@@ -16,11 +16,13 @@ namespace ReactApp1.Server.Services
 
         public Task<string> GetUserRoleAsync(User user);
 
-        public Task<User> GetCurrentUserAsync(ClaimsPrincipal claimsPrincipal);
+        public Task<User?> GetCurrentUserAsync(ClaimsPrincipal claimsPrincipal);
 
-        public Task<User> GetUserByIdAsync(string userId);
+        public Task<User?> GetUserByIdAsync(string userId);
 
-        public Task<User> GetUserByEmailAsync(string email);
+        public Task<User?> GetUserByEmailAsync(string email);
+
+        public Task<User?> GetUserByEmailWithRoleAsync(string email);
 
         public Task<IdentityResult> UpdateUserAsync(User user);
 

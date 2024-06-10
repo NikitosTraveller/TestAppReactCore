@@ -187,11 +187,7 @@ namespace ReactApp1.Server.Controllers
         [HttpGet("home/{email}"), Authorize]
         public async Task<ActionResult> GetCurrentUser(string email)
         {
-            User? userInfo = await _appDBContext.Users
-                .Where(u => u.Email == email)
-                .Include(u => u.UserRoles)
-                .ThenInclude(r => r.Role)
-                .FirstOrDefaultAsync();
+            User? userInfo = await _userService.GetUserByEmailWithRoleAsync(email);
 
             if (userInfo == null)
             {

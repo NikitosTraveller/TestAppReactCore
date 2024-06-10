@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using ReactApp1.Server.Models;
 using System.Security.Claims;
+using TestApp.Server.Data;
 using TestApp.Server.Models;
 
 namespace ReactApp1.Server.Services
@@ -38,17 +39,26 @@ namespace ReactApp1.Server.Services
                 .ToListAsync();
         }
 
-        public async Task<User> GetCurrentUserAsync(ClaimsPrincipal claimsPrincipal)
+        public async Task<User?> GetCurrentUserAsync(ClaimsPrincipal claimsPrincipal)
         {
             return await _userManager.GetUserAsync(claimsPrincipal);
         }
 
-        public async Task<User> GetUserByEmailAsync(string email)
+        public async Task<User?> GetUserByEmailAsync(string email)
         {
             return await _userManager.FindByEmailAsync(email);
         }
 
-        public async Task<User> GetUserByIdAsync(string userId)
+        public async Task<User?> GetUserByEmailWithRoleAsync(string email)
+        {
+            return await _userManager.Users
+                .Where(u => u.Email == email)
+                .Include(u => u.UserRoles)
+                .ThenInclude(r => r.Role)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<User?> GetUserByIdAsync(string userId)
         {
             return await _userManager.FindByIdAsync(userId);
         }
