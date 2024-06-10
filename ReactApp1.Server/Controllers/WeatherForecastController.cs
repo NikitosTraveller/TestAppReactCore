@@ -268,24 +268,7 @@ namespace ReactApp1.Server.Controllers
                 return Forbid("Set Avatar forbidden");
             }
 
-            var uploadsFolder = Path.Combine("wwwRoot", "Avatars");
-            if (!Directory.Exists(uploadsFolder))
-            {
-                Directory.CreateDirectory(uploadsFolder);
-            }
-
-            string path = Path.Combine(uploadsFolder, _user.Avatar ?? "");
-            if (System.IO.File.Exists(path))
-            {
-                System.IO.File.Delete(path);
-            }
-
-            var uniqueFileName = uploadFileRequest.UserId + "_" + uploadFileRequest.FileName;
-            var filePath = Path.Combine(uploadsFolder, uniqueFileName);
-            using (var fileStream = new FileStream(filePath, FileMode.Create))
-            {
-                await uploadFileRequest.FormFile.CopyToAsync(fileStream);
-            }
+            string uniqueFileName = await FileHelper.SaveAvatarImageAsync(uploadFileRequest, _user.Avatar);
 
             _user.Avatar = $"/Avatars/{uniqueFileName}";
 
