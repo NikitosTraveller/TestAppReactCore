@@ -114,8 +114,8 @@ namespace ReactApp1.Server.Controllers
 
                 var currentUser = await _userManager.GetUserAsync(HttpContext.User);
 
-                var currentUserRole = (await _userManager.GetRolesAsync(currentUser)).FirstOrDefault();
-                var userToDeleteRole = (await _userManager.GetRolesAsync(userToDelete)).FirstOrDefault();
+                var currentUserRole = await _userService.GetUserRoleAsync(currentUser);
+                var userToDeleteRole = await _userService.GetUserRoleAsync(userToDelete); 
                 var r1 = RoleHelper.GetRoleByName(currentUserRole);
                 var r2 = RoleHelper.GetRoleByName(userToDeleteRole);
 
@@ -153,8 +153,8 @@ namespace ReactApp1.Server.Controllers
 
             var currentUser = await _userManager.GetUserAsync(HttpContext.User);
 
-            var currentUserRole = (await _userManager.GetRolesAsync(currentUser)).FirstOrDefault();
-            var userToChangeRole = (await _userManager.GetRolesAsync(userToChange)).FirstOrDefault();
+            var currentUserRole = await _userService.GetUserRoleAsync(currentUser);
+            var userToChangeRole = await _userService.GetUserRoleAsync(userToChange);
             var r1 = RoleHelper.GetRoleByName(currentUserRole);
             var r2 = RoleHelper.GetRoleByName(userToChangeRole);
             bool isChangeRolePermitted = UserOperationsValidator.IsChangeRolePermitted(currentUser.Id, userToChange.Id, r2, r1);
@@ -257,8 +257,8 @@ namespace ReactApp1.Server.Controllers
             }
             var currentUser = await _userManager.GetUserAsync(HttpContext.User);
 
-            var currentUserRole = (await _userManager.GetRolesAsync(currentUser)).FirstOrDefault();
-            var roleToSetAvatar = (await _userManager.GetRolesAsync(_user)).FirstOrDefault();
+            var currentUserRole = await _userService.GetUserRoleAsync(currentUser);
+            var roleToSetAvatar = await _userService.GetUserRoleAsync(_user);
             var r1 = RoleHelper.GetRoleByName(currentUserRole);
             var r2 = RoleHelper.GetRoleByName(roleToSetAvatar);
 

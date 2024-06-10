@@ -28,6 +28,11 @@ namespace ReactApp1.Server.Services
             return await _userManager.DeleteAsync(user);
         }
 
+        public async Task<string> GetUserRoleAsync(User user)
+        {
+            return (await _userManager.GetRolesAsync(user)).FirstOrDefault();
+        }
+
         public async Task<IdentityResult> LoginUserAsync(User user)
         {
             user.LastLoginDate = DateTime.Now;
