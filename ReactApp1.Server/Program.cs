@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using ReactApp1.Server.Models;
+using ReactApp1.Server.Services;
 using TestApp.Server.Data;
 using TestApp.Server.Models;
 
@@ -44,6 +45,8 @@ namespace ReactApp1.Server
             }).AddEntityFrameworkStores<AppDBContext>();
 
             builder.Services.AddSwaggerGen();
+
+            builder.Services.AddScoped<IUserService, UserService>();
 
             var app = builder.Build();
 

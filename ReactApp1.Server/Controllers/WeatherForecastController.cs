@@ -5,22 +5,22 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ReactApp1.Server.Helpers;
 using ReactApp1.Server.Models;
+using ReactApp1.Server.Services;
 using ReactApp1.Server.Validators;
-using System;
 using System.Security.Claims;
 using TestApp.Server.Data;
 using TestApp.Server.Models;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ReactApp1.Server.Controllers
 {
     [ApiController]
     [Route("[controller]")]
     public class WeatherForecastController(SignInManager<User> sm, UserManager<User> um, 
-        AppDBContext context, IWebHostEnvironment webHostEnvironment, IMapper mapper) : ControllerBase
+        AppDBContext context, IWebHostEnvironment webHostEnvironment, IUserService userService, IMapper mapper) : ControllerBase
     {
         private readonly IMapper _mapper = mapper;
 
+        private readonly IUserService _userService = userService;
         private readonly SignInManager<User> _signInManager = sm;
         private readonly UserManager<User> _userManager = um;
         private readonly AppDBContext _appDBContext = context;
@@ -40,9 +40,7 @@ namespace ReactApp1.Server.Controllers
                     UserName = registerRequest.UserName,
                 };
 
-                result = await _userManager.CreateAsync(_user, registerRequest.Password);
-                var addedUser = await _userManager.FindByEmailAsync(registerRequest.Email);
-                await _userManager.AddToRoleAsync(addedUser, AppUserRole.Regular.ToString());
+                result = await _userService.CreateUserAsync(_user, registerRequest.Password);
 
             }
             catch (Exception ex)
@@ -72,10 +70,7 @@ namespace ReactApp1.Server.Controllers
                         return Unauthorized(new { message = "Check your login credentials and try again" });
                     }
 
-                    _user.LastLoginDate = DateTime.Now;
-                    _user.LoginCount++;
-
-                    var updateResult = await _userManager.UpdateAsync(_user);
+                    var updateResult = await _userService.LoginUserAsync(_user); 
                 }
                 else
                 {
@@ -131,8 +126,7 @@ namespace ReactApp1.Server.Controllers
                     return Forbid("Delete forbidden");
                 }
 
-                await _userManager.RemoveFromRolesAsync(userToDelete, [AppUserRole.Admin.ToString(), AppUserRole.Regular.ToString()]);
-                var result = await _userManager.DeleteAsync(userToDelete);
+                var result = await _userService.DeleteUserAsync(userToDelete);
 
                 if (result.Succeeded)
                 {
@@ -170,8 +164,7 @@ namespace ReactApp1.Server.Controllers
                 return Forbid("Change Role forbidden");
             }
 
-            await _userManager.RemoveFromRolesAsync(userToChange, [AppUserRole.Admin.ToString(), AppUserRole.Regular.ToString()]);
-            await _userManager.AddToRoleAsync(userToChange, changeRoleRequest.Role);
+            await _userService.ChangeUserRoleAsync(userToChange, changeRoleRequest.Role);
 
             var result = _mapper.Map<UserResponse>(userToChange);
             result.RoleName = changeRoleRequest.Role;
