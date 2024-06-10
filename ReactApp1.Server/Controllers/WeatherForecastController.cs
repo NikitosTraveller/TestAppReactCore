@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ReactApp1.Server.Helpers;
 using ReactApp1.Server.Models;
 using ReactApp1.Server.Validators;
 using System;
@@ -120,8 +121,8 @@ namespace ReactApp1.Server.Controllers
 
                 var currentUserRole = (await _userManager.GetRolesAsync(currentUser)).FirstOrDefault();
                 var userToDeleteRole = (await _userManager.GetRolesAsync(userToDelete)).FirstOrDefault();
-                var r1 = (AppUserRole)Enum.Parse(typeof(AppUserRole), currentUserRole);
-                var r2 = (AppUserRole)Enum.Parse(typeof(AppUserRole), userToDeleteRole);
+                var r1 = RoleHelper.GetRoleByName(currentUserRole);
+                var r2 = RoleHelper.GetRoleByName(userToDeleteRole);
 
                 bool isDeletePermitted = UserOperationsValidator.IsDeletePermitted(currentUser.Id, userToDelete.Id, r2, r1);
 
@@ -160,9 +161,8 @@ namespace ReactApp1.Server.Controllers
 
             var currentUserRole = (await _userManager.GetRolesAsync(currentUser)).FirstOrDefault();
             var userToChangeRole = (await _userManager.GetRolesAsync(userToChange)).FirstOrDefault();
-            var r1 = (AppUserRole)Enum.Parse(typeof(AppUserRole), currentUserRole);
-            var r2 = (AppUserRole)Enum.Parse(typeof(AppUserRole), userToChangeRole);
-
+            var r1 = RoleHelper.GetRoleByName(currentUserRole);
+            var r2 = RoleHelper.GetRoleByName(userToChangeRole);
             bool isChangeRolePermitted = UserOperationsValidator.IsChangeRolePermitted(currentUser.Id, userToChange.Id, r2, r1);
 
             if (!isChangeRolePermitted)
@@ -266,8 +266,8 @@ namespace ReactApp1.Server.Controllers
 
             var currentUserRole = (await _userManager.GetRolesAsync(currentUser)).FirstOrDefault();
             var roleToSetAvatar = (await _userManager.GetRolesAsync(_user)).FirstOrDefault();
-            var r1 = (AppUserRole)Enum.Parse(typeof(AppUserRole), currentUserRole);
-            var r2 = (AppUserRole)Enum.Parse(typeof(AppUserRole), roleToSetAvatar);
+            var r1 = RoleHelper.GetRoleByName(currentUserRole);
+            var r2 = RoleHelper.GetRoleByName(roleToSetAvatar);
 
             bool isSetAvatarPermitted = UserOperationsValidator.IsSetAvatarPermitted(currentUser.Id, _user.Id, r2, r1);
 
